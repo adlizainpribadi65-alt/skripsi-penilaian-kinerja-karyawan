@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+    /* Heritage Light Mode (Default) */
+    --brand-bg: #fdfcf8;
+    --brand-dark: #1e293b;
+    --brand-gold: #b39a57;
+    --brand-gold-muted: rgba(179, 154, 87, 0.15);
+    --brand-leather: #8b5e3c;
+    --brand-leather-dark: #5d3f28;
+    --text-main: #242421;
+    --glass-white: rgba(255, 255, 255, 0.6);
+    --stitching: dashed 2px rgba(179, 154, 87, 0.3);
+}
+
+[data-theme='dark'] {
+    /* Heritage Dark Mode */
+    --brand-bg: #0f1115;
+    --brand-dark: #0f1115;
+    --brand-gold: #cbb26a;
+    --text-main: #f1f1e6;
+    --glass-white: rgba(255, 255, 255, 0.03);
+}
+
+body {
+    background-color: var(--brand-bg);
+    color: var(--text-main);
+    font-family: 'Outfit', sans-serif;
+    background-image:
+        radial-gradient(circle at 20% 30%, var(--brand-gold-muted) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(139, 94, 60, 0.05) 0%, transparent 40%);
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+h1,
+h2,
+h3,
+.brand-font {
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 0.02em;
+}
+
+/* Luxury Card with Stitching */
+.reegioella-card {
+    background: var(--glass-white);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(203, 178, 106, 0.1);
+    border-radius: 24px;
+    padding: 32px;
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.reegioella-card::after {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    border: var(--stitching);
+    border-radius: 16px;
+    pointer-events: none;
+}
+
+/* Buttons */
+.btn-reegioella {
+    background: linear-gradient(135deg, var(--brand-gold) 0%, #b39a57 100%);
+    color: var(--brand-dark);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 14px 28px;
+    border-radius: 100px;
+    border: none;
+    box-shadow: 0 10px 20px rgba(203, 178, 106, 0.2);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-reegioella:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(203, 178, 106, 0.4);
+}
+
+/* Kiosk Specifics */
+.kiosk-time {
+    font-size: 5rem;
+    font-weight: 800;
+    color: var(--brand-gold);
+    text-shadow: 0 0 30px rgba(203, 178, 106, 0.3);
+}
+
+.industrial-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--brand-leather);
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+}
+
+/* Sidebar Branding */
+.sidebar-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 10px rgba(203, 178, 106, 0.5));
+}

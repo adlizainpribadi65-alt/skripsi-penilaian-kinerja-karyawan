@@ -1,0 +1,1001 @@
+/*
+ * ============================================================
+ *  SIDEBAR.CSS — Reegioella Hub
+ *  File terpisah khusus untuk styling sidebar.
+ *  Untuk mengubah tampilan, cukup edit variabel di bawah ini.
+ * ============================================================
+ */
+
+/* =============================================================
+   🎨 SIDEBAR THEME VARIABLES — UBAH DI SINI UNTUK KUSTOMISASI
+   =============================================================
+
+   Variabel-variabel ini mengontrol seluruh tampilan sidebar.
+   Cukup ubah nilai di bawah untuk mengubah warna/ukuran/animasi.
+*/
+:root {
+    /* --- Layout & Animation (Common) --- */
+    --sb-width: 280px;
+    --sb-margin: 16px;
+    --sb-radius: 24px;
+    --sb-anim-border-speed: 6s;
+    --sb-anim-aurora-speed: 25s;
+    --sb-entrance-duration: 0.4s;
+    --sb-entrance-easing: cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* --- Light Mode Sidebar (Default) --- */
+    --sb-bg-from: rgba(255, 255, 255, 0.9);
+    --sb-bg-mid: rgba(248, 250, 252, 0.95);
+    --sb-bg-to: rgba(241, 245, 249, 1);
+
+    --sb-accent: #4f46e5;
+    --sb-accent-glow: rgba(79, 70, 229, 0.15);
+    --sb-text-default: #64748b;
+    --sb-text-hover: #1e293b;
+    --sb-text-active: #1e293b;
+    --sb-title-color: rgba(71, 85, 105, 0.6);
+    --sb-border-color: rgba(0, 0, 0, 0.06);
+    --sb-shadow: 0 15px 40px -12px rgba(0, 0, 0, 0.08);
+
+    /* --- Section Icon Colors (Light) --- */
+    --sb-icon-bg-opacity: 0.08;
+    --sb-icon-indigo: #4f46e5;
+    --sb-icon-emerald: #059669;
+    --sb-icon-amber: #d97706;
+    --sb-icon-violet: #7c3aed;
+    --sb-icon-cyan: #0891b2;
+    --sb-icon-rose: #e11d48;
+    --sb-icon-teal: #0d9488;
+    --sb-icon-gold: #b45309;
+}
+
+[data-theme='dark'] {
+    /* --- Dark Mode Sidebar Overrides --- */
+    --sb-bg-from: rgba(15, 23, 42, 0.97);
+    --sb-bg-mid: rgba(7, 11, 25, 0.99);
+    --sb-bg-to: rgba(2, 6, 18, 1);
+
+    --sb-accent: #6366f1;
+    --sb-accent-glow: rgba(99, 102, 241, 0.4);
+    --sb-text-default: #94a3b8;
+    --sb-text-hover: #ffffff;
+    --sb-text-active: #ffffff;
+    --sb-title-color: rgba(148, 163, 184, 0.6);
+    --sb-border-color: rgba(99, 102, 241, 0.12);
+    --sb-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+
+    --sb-icon-bg-opacity: 0.12;
+    --sb-icon-indigo: #818cf8;
+    --sb-icon-emerald: #34d399;
+}
+
+/* ============================================================
+   🧹 RESET NAVIGASI
+   ============================================================ */
+.sidebar a,
+.sidebar a:hover,
+.sidebar a:focus,
+.nav-item,
+.nav-item:hover {
+    text-decoration: none !important;
+    color: inherit;
+    outline: none;
+}
+
+/* ============================================================
+   📦 SIDEBAR CONTAINER
+   ============================================================ */
+.sidebar {
+    width: var(--sb-width);
+    flex-shrink: 0;
+    margin: var(--sb-margin) 0 var(--sb-margin) var(--sb-margin);
+    padding: 0;
+    background: linear-gradient(165deg,
+            var(--sb-bg-from) 0%,
+            var(--sb-bg-mid) 40%,
+            var(--sb-bg-to) 100%);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    border: 1px solid var(--sb-border-color);
+    border-radius: var(--sb-radius);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: var(--sb-margin);
+    height: calc(100vh - calc(var(--sb-margin) * 2));
+    z-index: 100;
+    box-shadow: var(--sb-shadow);
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ============================================================
+   ✨ LAYER DEKORATIF
+   ============================================================ */
+
+/* Partikel melayang */
+.sidebar-particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+    animation: sb-particle-drift linear infinite;
+}
+
+.p1 {
+    width: 3px;
+    height: 3px;
+    background: rgba(99, 102, 241, 0.6);
+    top: 20%;
+    left: 10%;
+    animation-duration: var(--sb-anim-particle-1);
+    animation-delay: 0s;
+}
+
+.p2 {
+    width: 2px;
+    height: 2px;
+    background: rgba(34, 211, 238, 0.5);
+    top: 50%;
+    left: 80%;
+    animation-duration: var(--sb-anim-particle-2);
+    animation-delay: 2s;
+}
+
+.p3 {
+    width: 4px;
+    height: 4px;
+    background: rgba(16, 185, 129, 0.4);
+    top: 70%;
+    left: 30%;
+    animation-duration: var(--sb-anim-particle-3);
+    animation-delay: 4s;
+}
+
+.p4 {
+    width: 2px;
+    height: 2px;
+    background: rgba(244, 114, 182, 0.4);
+    top: 35%;
+    left: 60%;
+    animation-duration: 20s;
+    animation-delay: 1s;
+}
+
+.p5 {
+    width: 3px;
+    height: 3px;
+    background: rgba(251, 191, 36, 0.3);
+    top: 85%;
+    left: 50%;
+    animation-duration: 14s;
+    animation-delay: 3s;
+}
+
+@keyframes sb-particle-drift {
+    0% {
+        opacity: 0;
+        transform: translateY(0) scale(0);
+    }
+
+    10% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    90% {
+        opacity: 0.6;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-200px) translateX(30px) scale(0.5);
+    }
+}
+
+/* Noise texture overlay */
+.sidebar-noise {
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Accent stripe atas */
+.sidebar-top-accent {
+    position: absolute;
+    top: 0;
+    left: 24px;
+    right: 24px;
+    height: 2px;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(99, 102, 241, 0.5) 20%,
+            rgba(34, 211, 238, 0.8) 50%,
+            rgba(16, 185, 129, 0.5) 80%,
+            transparent);
+    border-radius: 0 0 4px 4px;
+    z-index: 5;
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+}
+
+/* Aurora mesh background */
+.sidebar::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background:
+        radial-gradient(circle at 30% 20%, rgba(99, 102, 241, 0.12) 0%, transparent 35%),
+        radial-gradient(circle at 70% 60%, rgba(34, 211, 238, 0.08) 0%, transparent 35%),
+        radial-gradient(circle at 20% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 35%),
+        radial-gradient(circle at 80% 30%, rgba(244, 114, 182, 0.05) 0%, transparent 30%);
+    animation: sb-aurora-spin var(--sb-anim-aurora-speed) infinite linear;
+    z-index: 0;
+    pointer-events: none;
+}
+
+@keyframes sb-aurora-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Animated rotating border glow */
+.sidebar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from var(--angle),
+            transparent 60%,
+            rgba(99, 102, 241, 0.4) 75%,
+            rgba(34, 211, 238, 0.6) 85%,
+            rgba(16, 185, 129, 0.3) 95%,
+            transparent 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: 10;
+    animation: rotate-angle var(--sb-anim-border-speed) infinite linear;
+    pointer-events: none;
+    filter: blur(0.3px);
+    opacity: 0.8;
+}
+
+/* ============================================================
+   🏷️ BRAND SECTION
+   ============================================================ */
+.brand-section {
+    padding: 28px 20px 24px 20px;
+    margin: 0;
+    position: relative;
+    text-align: center;
+    z-index: 2;
+    background: linear-gradient(180deg, rgba(99, 102, 241, 0.06) 0%, transparent 100%);
+    animation: sb-brand-entrance 0.6s var(--sb-entrance-easing) 0.1s both;
+}
+
+@keyframes sb-brand-entrance {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Logo ring berputar */
+.brand-logo-ring {
+    width: 52px;
+    height: 52px;
+    margin: 0 auto 14px auto;
+    border-radius: 16px;
+    padding: 2px;
+    background: conic-gradient(from 0deg,
+            rgba(99, 102, 241, 0.6),
+            rgba(34, 211, 238, 0.6),
+            rgba(16, 185, 129, 0.6),
+            rgba(99, 102, 241, 0.6));
+    animation: rotate-angle var(--sb-anim-logo-spin) linear infinite,
+        sb-logo-pulse var(--sb-anim-logo-spin) ease-in-out infinite;
+    position: relative;
+}
+
+@keyframes sb-logo-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+    }
+
+    50% {
+        box-shadow: 0 0 25px rgba(99, 102, 241, 0.4), 0 0 50px rgba(34, 211, 238, 0.15);
+    }
+}
+
+.brand-logo-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 14px;
+    background: rgba(10, 15, 30, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Icon brand berputar */
+.brand-icon-spin {
+    font-size: 1.2rem;
+    color: var(--primary);
+    filter: drop-shadow(0 0 8px var(--primary-glow));
+    animation: sb-icon-rotate var(--sb-anim-brand-spin) linear infinite;
+}
+
+@keyframes sb-icon-rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Teks REEGIOELLA shimmer */
+.shimmer-neon {
+    background: linear-gradient(90deg, #fff, var(--primary), #a78bfa, #fff);
+    background-size: 300% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: sb-shimmer var(--sb-anim-shimmer) infinite linear;
+    filter: drop-shadow(0 0 10px var(--primary-glow));
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: -0.02em;
+}
+
+@keyframes sb-shimmer {
+    to {
+        background-position: 200% center;
+    }
+}
+
+/* Status pill "SYSTEM ONLINE" */
+.brand-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 4px 14px;
+    border-radius: 100px;
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: #10b981;
+    text-transform: uppercase;
+    animation: sb-status-glow 3s ease-in-out infinite;
+}
+
+@keyframes sb-status-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 5px rgba(16, 185, 129, 0.1);
+    }
+
+    50% {
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.25);
+    }
+}
+
+/* Dot hijau berkedip */
+.status-dot-live {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+    animation: sb-live-pulse 2s infinite ease-in-out;
+}
+
+@keyframes sb-live-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        box-shadow: 0 0 6px #10b981;
+    }
+
+    50% {
+        opacity: 0.4;
+        box-shadow: 0 0 15px #10b981;
+    }
+}
+
+/* ============================================================
+   🗂️ SIDEBAR NAV + SECTION TITLES
+   ============================================================ */
+.sidebar-nav {
+    padding: 8px 14px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(99, 102, 241, 0.15) transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+    width: 3px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.2);
+    border-radius: 100px;
+}
+
+/* Section title (Main Hub, Supply Chain, dll) */
+.sidebar-title {
+    font-size: 0.58rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--sb-title-color);
+    margin: 22px 0 10px 6px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: sb-title-fade-in var(--sb-entrance-duration) var(--sb-entrance-easing) both;
+}
+
+@keyframes sb-title-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Icon kecil di sebelah section title */
+.sidebar-title-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    background: rgba(99, 102, 241, 0.08);
+    font-size: 0.55rem;
+    color: rgba(99, 102, 241, 0.5);
+}
+
+/* Garis horizontal setelah section title */
+.sidebar-title::after {
+    content: '';
+    height: 1px;
+    flex: 1;
+    background: linear-gradient(90deg, rgba(99, 102, 241, 0.15), transparent 80%);
+    margin-left: 4px;
+}
+
+/* ============================================================
+   🔘 NAV ITEMS
+   ============================================================ */
+.nav-item {
+    padding: 10px 14px;
+    border-radius: 14px;
+    margin-bottom: 3px;
+    color: var(--sb-text-default) !important;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    transition: all 0.35s var(--sb-entrance-easing);
+    position: relative;
+    border: 1px solid transparent;
+    overflow: hidden;
+    animation: sb-nav-slide-in var(--sb-entrance-duration) var(--sb-entrance-easing) both;
+}
+
+/* Stagger delay tiap item */
+.sidebar-nav>.sidebar-title:nth-child(1) {
+    animation-delay: 0.15s;
+}
+
+.sidebar-nav>.nav-item:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.sidebar-nav>.sidebar-title:nth-child(3) {
+    animation-delay: 0.25s;
+}
+
+.sidebar-nav>.nav-item:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+.sidebar-nav>.nav-item:nth-child(5) {
+    animation-delay: 0.35s;
+}
+
+.sidebar-nav>.nav-item:nth-child(6) {
+    animation-delay: 0.4s;
+}
+
+.sidebar-nav>.sidebar-title:nth-child(7) {
+    animation-delay: 0.45s;
+}
+
+.sidebar-nav>.nav-item:nth-child(8) {
+    animation-delay: 0.5s;
+}
+
+.sidebar-nav>.nav-item:nth-child(9) {
+    animation-delay: 0.55s;
+}
+
+.sidebar-nav>.nav-item:nth-child(10) {
+    animation-delay: 0.6s;
+}
+
+.sidebar-nav>.sidebar-title:nth-child(11) {
+    animation-delay: 0.65s;
+}
+
+.sidebar-nav>.nav-item:nth-child(12) {
+    animation-delay: 0.7s;
+}
+
+.sidebar-nav>.nav-item:nth-child(13) {
+    animation-delay: 0.75s;
+}
+
+@keyframes sb-nav-slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Light sweep saat hover */
+.nav-item-glow {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
+    pointer-events: none;
+}
+
+.nav-item:hover .nav-item-glow {
+    animation: sb-sweep-glow 0.6s ease forwards;
+}
+
+@keyframes sb-sweep-glow {
+    from {
+        left: -100%;
+    }
+
+    to {
+        left: 100%;
+    }
+}
+
+/* ============================================================
+   🎁 ICON BOXES — Kotak icon tiap menu
+   ============================================================ */
+.nav-icon-box {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    transition: all 0.35s var(--sb-entrance-easing);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--sb-text-default);
+}
+
+.nav-icon-box i {
+    position: relative;
+    z-index: 1;
+}
+
+/* Warna per section */
+.icon-indigo {
+    background: rgba(79, 70, 229, var(--sb-icon-bg-opacity));
+    border-color: rgba(79, 70, 229, 0.15);
+    color: var(--sb-icon-indigo);
+}
+
+.icon-emerald {
+    background: rgba(16, 185, 129, var(--sb-icon-bg-opacity));
+    border-color: rgba(16, 185, 129, 0.15);
+    color: var(--sb-icon-emerald);
+}
+
+.icon-amber {
+    background: rgba(245, 158, 11, var(--sb-icon-bg-opacity));
+    border-color: rgba(245, 158, 11, 0.15);
+    color: var(--sb-icon-amber);
+}
+
+.icon-violet {
+    background: rgba(124, 58, 237, var(--sb-icon-bg-opacity));
+    border-color: rgba(124, 58, 237, 0.15);
+    color: var(--sb-icon-violet);
+}
+
+.icon-cyan {
+    background: rgba(8, 145, 178, var(--sb-icon-bg-opacity));
+    border-color: rgba(8, 145, 178, 0.15);
+    color: var(--sb-icon-cyan);
+}
+
+.icon-rose {
+    background: rgba(225, 29, 72, var(--sb-icon-bg-opacity));
+    border-color: rgba(225, 29, 72, 0.15);
+    color: var(--sb-icon-rose);
+}
+
+.icon-teal {
+    background: rgba(13, 148, 136, var(--sb-icon-bg-opacity));
+    border-color: rgba(13, 148, 136, 0.15);
+    color: var(--sb-icon-teal);
+}
+
+.icon-gold {
+    background: rgba(180, 83, 9, var(--sb-icon-bg-opacity));
+    border-color: rgba(180, 83, 9, 0.15);
+    color: var(--sb-icon-gold);
+}
+
+/* External link badge */
+.nav-ext-badge {
+    margin-left: auto;
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    opacity: 0.4;
+    transition: all 0.3s ease;
+}
+
+.nav-item:hover .nav-ext-badge {
+    opacity: 0.8;
+    color: var(--primary);
+}
+
+/* ============================================================
+   🖱️ HOVER STATE
+   ============================================================ */
+.nav-item:hover {
+    color: var(--sb-text-hover) !important;
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
+    transform: translateX(4px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.nav-item:hover .nav-icon-box {
+    animation: sb-icon-bounce 0.5s var(--sb-entrance-easing) forwards;
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+@keyframes sb-icon-bounce {
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    30% {
+        transform: scale(1.15) rotate(-5deg);
+    }
+
+    60% {
+        transform: scale(1.05) rotate(3deg);
+    }
+
+    100% {
+        transform: scale(1.1) rotate(0deg);
+    }
+}
+
+/* Glow warna saat hover per icon */
+.nav-item:hover .icon-indigo {
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
+    border-color: rgba(99, 102, 241, 0.35);
+}
+
+.nav-item:hover .icon-emerald {
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
+    border-color: rgba(16, 185, 129, 0.35);
+}
+
+.nav-item:hover .icon-amber {
+    box-shadow: 0 0 12px rgba(251, 191, 36, 0.3);
+    border-color: rgba(251, 191, 36, 0.35);
+}
+
+.nav-item:hover .icon-violet {
+    box-shadow: 0 0 12px rgba(167, 139, 250, 0.3);
+    border-color: rgba(167, 139, 250, 0.35);
+}
+
+.nav-item:hover .icon-cyan {
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.3);
+    border-color: rgba(34, 211, 238, 0.35);
+}
+
+.nav-item:hover .icon-rose {
+    box-shadow: 0 0 12px rgba(244, 114, 182, 0.3);
+    border-color: rgba(244, 114, 182, 0.35);
+}
+
+.nav-item:hover .icon-teal {
+    box-shadow: 0 0 12px rgba(45, 212, 191, 0.3);
+    border-color: rgba(45, 212, 191, 0.35);
+}
+
+.nav-item:hover .icon-gold {
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+    border-color: rgba(245, 158, 11, 0.35);
+}
+
+/* Click feedback */
+.nav-item:active {
+    transform: scale(0.97) translateX(2px);
+    background: rgba(99, 102, 241, 0.08);
+    border-color: rgba(99, 102, 241, 0.3);
+    transition: all 0.08s ease;
+}
+
+/* ============================================================
+   ✅ ACTIVE STATE — Menu yang sedang aktif
+   ============================================================ */
+.nav-item.active {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(34, 211, 238, 0.06) 100%);
+    color: var(--sb-text-active) !important;
+    font-weight: 600;
+    border-color: rgba(99, 102, 241, 0.25);
+    box-shadow:
+        0 8px 25px -8px rgba(99, 102, 241, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Shimmer sweep pada active item */
+.nav-item.active .nav-item-glow {
+    animation: sb-active-shimmer 3s ease-in-out infinite;
+    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.08), transparent);
+}
+
+@keyframes sb-active-shimmer {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 200%;
+    }
+}
+
+/* Icon box active */
+.nav-item.active .nav-icon-box {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(34, 211, 238, 0.15) 100%);
+    border-color: rgba(99, 102, 241, 0.4);
+    color: #fff;
+    box-shadow: 0 0 18px rgba(99, 102, 241, 0.3);
+}
+
+/* Rail neon warna di kiri item aktif */
+.nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 15%;
+    height: 70%;
+    width: 3px;
+    border-radius: 0 10px 10px 0;
+    background: linear-gradient(180deg, var(--sb-accent), var(--sb-accent-2));
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.6);
+    animation: sb-rail-glow var(--sb-anim-rail-pulse) infinite ease-in-out;
+}
+
+@keyframes sb-rail-glow {
+
+    0%,
+    100% {
+        opacity: 0.7;
+        box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+    }
+
+    50% {
+        opacity: 1;
+        box-shadow: 0 0 25px rgba(99, 102, 241, 0.7);
+    }
+}
+
+/* Dot indicator kanan item aktif */
+.nav-item.active::after {
+    content: '';
+    position: absolute;
+    right: 14px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--sb-accent), var(--sb-accent-2));
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
+    animation: sb-dot-breathe var(--sb-anim-dot-breathe) infinite ease-in-out;
+}
+
+@keyframes sb-dot-breathe {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+
+    50% {
+        transform: scale(1.3);
+        opacity: 1;
+    }
+}
+
+/* ============================================================
+   👤 SIDEBAR FOOTER — User profile card
+   ============================================================ */
+.sidebar-footer {
+    padding: 0 14px 18px 14px;
+    position: relative;
+    z-index: 2;
+    animation: sb-footer-slide-up 0.5s var(--sb-entrance-easing) 0.8s both;
+}
+
+@keyframes sb-footer-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sidebar-footer-divider {
+    height: 1px;
+    margin: 0 8px 16px 8px;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(99, 102, 241, 0.2) 30%,
+            rgba(34, 211, 238, 0.15) 70%,
+            transparent);
+}
+
+.sidebar-user-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(99, 102, 241, 0.04) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: all 0.3s ease;
+}
+
+.sidebar-user-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(99, 102, 241, 0.15);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.user-avatar-ring {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: 12px;
+    padding: 1.5px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.6), rgba(34, 211, 238, 0.4));
+}
+
+.user-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    background: rgba(10, 15, 35, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #818cf8;
+    font-size: 0.8rem;
+}
+
+.user-role-tag {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-top: 2px;
+}
+
+.role-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--sb-accent);
+    box-shadow: 0 0 6px rgba(99, 102, 241, 0.5);
+}
+
+.logout-btn {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    color: var(--text-dim) !important;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+    font-size: 0.8rem;
+}
+
+.logout-btn:hover {
+    color: #f43f5e !important;
+    background: rgba(244, 63, 94, 0.08);
+    border-color: rgba(244, 63, 94, 0.2);
+    box-shadow: 0 0 15px rgba(244, 63, 94, 0.15);
+    transform: scale(1.05);
+}
+
+/* ============================================================
+   📱 RESPONSIVE — Mobile hide sidebar
+   ============================================================ */
+@media (max-width: 991px) {
+    .sidebar {
+        display: none !important;
+    }
+}

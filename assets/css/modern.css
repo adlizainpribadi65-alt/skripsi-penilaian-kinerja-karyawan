@@ -1,0 +1,1089 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+@property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@keyframes rotate-angle {
+    0% {
+        --angle: 0deg;
+    }
+
+    100% {
+        --angle: 360deg;
+    }
+}
+
+:root {
+    /* Base Colors - Light Theme (Default) - Sophisticated Slate/Indigo */
+    --bg-body: #f1f5f9;
+    --bg-card: rgba(255, 255, 255, 0.75);
+    --text-main: #0f172a;
+    --text-muted: #475569;
+    --text-dim: #94a3b8;
+
+    --primary: #4f46e5;
+    --primary-glow: rgba(79, 70, 229, 0.15);
+    --secondary: #059669;
+    --accent: #e11d48;
+    --cyan: #0891b2;
+
+    --border-glass: rgba(0, 0, 0, 0.05);
+    --glass-blur: blur(20px);
+    --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+    --inner-glow: inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+}
+
+[data-theme='dark'] {
+    /* Base Colors - Dark Theme Override - Deep Space Nebula */
+    --bg-body: #020617;
+    --bg-card: rgba(15, 23, 42, 0.7);
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --text-dim: #64748b;
+
+    --primary: #818cf8;
+    --primary-glow: rgba(129, 140, 248, 0.25);
+
+    --border-glass: rgba(255, 255, 255, 0.06);
+    --glass-blur: blur(25px);
+    --card-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
+    --inner-glow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+}
+
+/* ==========================================================
+   THEME-AWARE TEXT OVERRIDES
+   Override Bootstrap's hardcoded text-white / text-white-50
+   so they adapt to the active light/dark theme.
+   ========================================================== */
+
+/* Light Mode: remap white text to dark readable colors */
+:root .text-white,
+:root .text-white {
+    color: var(--text-main) !important;
+}
+
+:root .text-white-50 {
+    color: var(--text-muted) !important;
+}
+
+/* Bootstrap .text-muted override → use theme token */
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Dark Mode: restore white text */
+[data-theme='dark'] .text-white {
+    color: #f1f5f9 !important;
+}
+
+[data-theme='dark'] .text-white-50 {
+    color: rgba(241, 245, 249, 0.5) !important;
+}
+
+/* Glass pane better contrast in light mode */
+:root .glass-pane {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme='dark'] .glass-pane {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* Metric value readability */
+.metric-value {
+    color: var(--text-main);
+}
+
+/* Widget title readability */
+.widget-title {
+    color: var(--text-dim);
+    opacity: 1;
+}
+
+/* Shimmer text fix for light mode */
+:root .shimmer-text {
+    background: linear-gradient(90deg, var(--primary), #6366f1, var(--primary));
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+[data-theme='dark'] .shimmer-text {
+    background: linear-gradient(90deg, #fff, var(--primary), #fff);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+body {
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    background-image:
+        radial-gradient(circle at 10% 10%, var(--primary-glow) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(34, 211, 238, 0.08) 0%, transparent 40%);
+    background-attachment: fixed;
+    margin: 0;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Premium Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.15);
+    border-radius: 100px;
+    transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.4);
+}
+
+/* Global Link Reset */
+a {
+    text-decoration: none !important;
+    transition: all 0.3s ease;
+}
+
+/* Elite Glass 6.0 - Deep Layering */
+.glass {
+    background: var(--bg-card);
+    backdrop-filter: var(--glass-blur) saturate(180%);
+    -webkit-backdrop-filter: var(--glass-blur) saturate(180%);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--card-shadow), var(--inner-glow);
+    overflow: hidden;
+    position: relative;
+    transition: background 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease;
+}
+
+.glass::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, transparent 40%, transparent 100%);
+    pointer-events: none;
+}
+
+.glass:hover {
+    border-color: rgba(99, 102, 241, 0.4);
+    transform: translateY(-6px) scale(1.002);
+    box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 1);
+}
+
+
+/* ==========================================================
+   SIDEBAR STYLES â†’ Dipindah ke: assets/css/sidebar.css
+   Untuk mengubah tampilan sidebar, edit file tersebut.
+   ========================================================== */
+
+/* Premium Table System */
+.premium-table-container {
+    overflow-x: auto;
+    width: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-glass) transparent;
+}
+
+.premium-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    color: var(--text-main);
+}
+
+.premium-table thead th {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 20px 24px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border-glass);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.premium-table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.premium-table tbody tr:hover {
+    background: rgba(99, 102, 241, 0.03);
+    transform: scale(1.002);
+}
+
+.premium-table td {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border-glass);
+    vertical-align: middle;
+}
+
+/* Glass Form Controls */
+.form-control-glass {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--border-glass);
+    border-radius: 12px;
+    padding: 12px 20px;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    outline: none;
+}
+
+[data-theme='dark'] .form-control-glass {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.form-control-glass:focus {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--primary);
+    box-shadow: 0 0 25px var(--primary-glow);
+    animation: pulse-shimmer 2s infinite alternate;
+}
+
+@keyframes pulse-shimmer {
+    from {
+        border-color: var(--primary);
+    }
+
+    to {
+        border-color: var(--cyan);
+    }
+}
+
+/* Premium Buttons */
+.btn-premium {
+    background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 14px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 10px 25px -5px var(--primary-glow);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+}
+
+.btn-premium:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 20px 40px -10px var(--primary-glow);
+}
+
+/* Statistics & Cards */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 24px;
+}
+
+.bento-card {
+    padding: 30px;
+    animation: entrance-fade 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes entrance-fade {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.metric-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+
+.widget-title {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+}
+
+/* Minimalist Count Indicator (The "5" in Image) */
+.nav-bubble {
+    margin-left: auto;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 500;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
+/* Badges */
+.badge-glass {
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    border: 1px solid var(--border-glass);
+    text-transform: uppercase;
+}
+
+.badge-emerald {
+    background: rgba(16, 185, 129, 0.25);
+    color: var(--secondary);
+    border-color: rgba(16, 185, 129, 0.5);
+}
+
+.badge-rose {
+    background: rgba(244, 63, 94, 0.25);
+    color: var(--accent);
+    border-color: rgba(244, 63, 94, 0.5);
+}
+
+.badge-indigo {
+    background: rgba(99, 102, 241, 0.25);
+    color: var(--primary);
+    border-color: rgba(99, 102, 241, 0.5);
+}
+
+/* Utilities */
+.shimmer-text {
+    background: linear-gradient(90deg, var(--primary), #6366f1, var(--primary));
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 5s infinite linear;
+}
+
+@keyframes shimmer {
+    to {
+        background-position: 200% center;
+    }
+}
+
+/* Theme-Aware Color Utilities */
+.text-cyan { color: var(--cyan) !important; }
+.text-accent { color: var(--accent) !important; }
+.text-emerald { color: var(--secondary) !important; }
+
+.glass-pane {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--border-glass);
+    border-radius: 14px;
+    backdrop-filter: blur(10px);
+}
+
+[data-theme='dark'] .glass-pane {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* Layout Architecture */
+.app-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--bg-body);
+}
+
+.content-main {
+    flex: 1;
+    padding: 40px 60px;
+    max-width: 1600px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* Bento Grid System (Industrial High-Performance) */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: minmax(min-content, max-content);
+    gap: 24px;
+}
+
+.span-1 {
+    grid-column: span 1;
+}
+
+.span-2 {
+    grid-column: span 2;
+}
+
+.span-3 {
+    grid-column: span 3;
+}
+
+.span-4 {
+    grid-column: span 4;
+}
+
+.span-5 {
+    grid-column: span 5;
+}
+
+.span-6 {
+    grid-column: span 6;
+}
+
+.span-7 {
+    grid-column: span 7;
+}
+
+.span-8 {
+    grid-column: span 8;
+}
+
+.span-9 {
+    grid-column: span 9;
+}
+
+.span-10 {
+    grid-column: span 10;
+}
+
+.span-11 {
+    grid-column: span 11;
+}
+
+.span-12 {
+    grid-column: span 12;
+}
+
+.bento-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 200px;
+}
+
+/* Floating Orbs (Buble Buble) */
+.orb-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.25;
+    animation: float-orb var(--duration) ease-in-out infinite alternate;
+}
+
+@keyframes float-orb {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate(var(--move-x), var(--move-y)) scale(1.3);
+    }
+}
+
+.orb-1 {
+    width: 600px;
+    height: 600px;
+    top: -100px;
+    left: -100px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, transparent 70%);
+    --duration: 30s;
+    --move-x: 100px;
+    --move-y: 150px;
+}
+
+.orb-2 {
+    width: 500px;
+    height: 500px;
+    bottom: -50px;
+    right: -50px;
+    background: radial-gradient(circle, rgba(34, 211, 238, 0.3) 0%, transparent 70%);
+    --duration: 35s;
+    --move-x: -150px;
+    --move-y: -100px;
+}
+
+.orb-3 {
+    width: 400px;
+    height: 400px;
+    top: 40%;
+    left: 50%;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, transparent 70%);
+    --duration: 40s;
+    --move-x: -120px;
+    --move-y: 100px;
+}
+
+.orb-4 {
+    width: 300px;
+    height: 300px;
+    bottom: 30%;
+    left: 20%;
+    background: radial-gradient(circle, rgba(244, 63, 94, 0.1) 0%, transparent 70%);
+    --duration: 45s;
+    --move-x: 80px;
+    --move-y: -120px;
+}
+
+/* --- TRUE MIRROR CLASSES (Inventory Model Parity) --- */
+.widget-title {
+    font-size: 0.62rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--text-dim);
+    margin: 25px 0 10px 14px;
+    opacity: 1;
+}
+
+.user-profile-badge {
+    padding: 18px;
+    background: rgba(255, 255, 255, 0.03);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-bubble {
+    margin-left: auto;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 2px 10px;
+    border-radius: 100px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.bubble-cyan {
+    background: rgba(34, 211, 238, 0.2);
+    color: #22d3ee;
+    border: 1px solid rgba(34, 211, 238, 0.3);
+}
+
+.bubble-purple {
+    background: rgba(167, 139, 250, 0.2);
+    color: #a78bfa;
+    border: 1px solid rgba(167, 139, 250, 0.3);
+}
+
+.avatar-glow {
+    position: relative;
+    z-index: 1;
+}
+
+.avatar-glow::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    box-shadow: 0 0 15px var(--primary-glow);
+    opacity: 0.5;
+    z-index: -1;
+}
+
+/* ==========================================================
+   MOBILE SUPREME REFINEMENT (Floating Hub)
+   ========================================================== */
+
+@media (max-width: 991px) {
+    .sidebar {
+        display: none !important;
+    }
+
+    .app-container {
+        flex-direction: column;
+    }
+
+    .content-main {
+        padding: 20px 16px 120px 16px;
+        /* Strategic padding for bottom hub */
+        width: 100%;
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+
+    .bento-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .span-1,
+    .span-2,
+    .span-3,
+    .span-4,
+    .span-5,
+    .span-6,
+    .span-7,
+    .span-8,
+    .span-9,
+    .span-10,
+    .span-11,
+    .span-12 {
+        grid-column: span 1 !important;
+        width: 100%;
+    }
+
+    .bento-card {
+        padding: 24px;
+        min-height: auto;
+    }
+
+    h1.display-5 {
+        font-size: 1.75rem !important;
+        letter-spacing: -0.01em;
+    }
+
+    .metric-value {
+        font-size: 2.5rem !important;
+    }
+
+    .header-section p {
+        font-size: 0.95rem !important;
+        line-height: 1.5;
+    }
+
+    /* Responsive Table Solution */
+    .premium-table-container {
+        margin: 0 -16px;
+        /* Bleed to edges */
+        padding: 0 16px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .premium-table {
+        min-width: 700px;
+        /* Force scroll for data integrity */
+    }
+
+    .premium-table td,
+    .premium-table th {
+        padding: 14px 16px;
+        font-size: 0.8rem;
+    }
+
+    /* Optimization for mobile touch targets */
+    .btn-premium {
+        width: 100%;
+        justify-content: center;
+        padding: 16px 20px;
+    }
+
+    /* Hide decorative orbs that might cause lag on mobile */
+    .orb-3,
+    .orb-4 {
+        display: none;
+    }
+}
+
+/* --- Theme Transition Animations --- */
+@keyframes animate-spin-once {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+
+    50% {
+        transform: rotate(180deg) scale(1.4);
+    }
+
+    100% {
+        transform: rotate(360deg) scale(1);
+    }
+}
+
+.animate-spin-once {
+    animation: animate-spin-once 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Shadow Glow for mini icons */
+.shadow-glow-mini {
+    filter: drop-shadow(0 0 5px var(--primary-glow));
+}
+
+/* Touch Device Refinements */
+@media (hover: none) {
+    .glass:hover {
+        transform: none;
+        box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.9);
+    }
+
+    .nav-item:hover {
+        transform: none;
+    }
+}
+
+/* ==========================================================
+   FORMAL PRINT STYLES (Black & White PDF / Certificate)
+   ========================================================== */
+@media print {
+    * {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        transform: none !important;
+        filter: none !important;
+        animation: none !important;
+        transition: none !important;
+    }
+
+    /* Base Reset */
+    body {
+        background: #fff !important;
+        color: #000 !important;
+        background-image: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-family: 'Times New Roman', serif !important;
+    }
+
+    .app-container {
+        display: block !important;
+        min-height: auto !important;
+    }
+
+    .content-main {
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Hide UI Elements */
+    .sidebar,
+    .orb-container,
+    .btn-premium,
+    .header-section,
+    .no-print,
+    .podium-glow-aura,
+    .print-header {
+        display: none !important;
+    }
+
+    .certificate-section.d-none {
+        display: block !important;
+    }
+
+    @page {
+        size: A4 landscape;
+        margin: 0;
+    }
+
+    body,
+    html {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    /* Certificate Layout for Exact A4 */
+    .certificate-section {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        margin: 0 !important;
+        width: 297mm !important;
+        height: 209mm !important;
+        max-width: 100vw !important;
+        padding: 5mm !important;
+        background: #fff !important;
+        border: none !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+        transform: none !important;
+        z-index: 9999 !important;
+    }
+
+    .certificate-border {
+        border: 6px double #000 !important;
+        padding: 8mm !important;
+        height: 100% !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+    }
+
+    .certificate-header {
+        text-align: center !important;
+        border-bottom: 2px solid #000 !important;
+        padding-bottom: 2mm !important;
+        margin-bottom: 5mm !important;
+    }
+
+    .cert-main-title {
+        font-size: 2.2rem !important;
+        font-weight: 900 !important;
+        margin: 0 !important;
+        letter-spacing: 5px !important;
+        text-transform: uppercase !important;
+        color: #000 !important;
+    }
+
+    .cert-sub-title {
+        font-size: 1rem !important;
+        font-weight: 700 !important;
+        margin: 2px 0 !important;
+        letter-spacing: 1px !important;
+        color: #000 !important;
+    }
+
+    .cert-number {
+        font-family: 'Courier New', Courier, monospace !important;
+        font-size: 0.9rem !important;
+        color: #333 !important;
+        margin-top: 5mm !important;
+    }
+
+    .cert-body {
+        text-align: center !important;
+        flex-grow: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        line-height: 1.5 !important;
+        font-size: 1rem !important;
+        color: #000 !important;
+    }
+
+    .cert-recipient {
+        margin: 5mm 0 !important;
+    }
+
+    .recipient-label {
+        font-size: 0.8rem !important;
+        letter-spacing: 3px !important;
+        color: #555 !important;
+        margin-bottom: 2mm !important;
+    }
+
+    .recipient-name {
+        font-size: 2.4rem !important;
+        font-weight: 800 !important;
+        text-decoration: underline !important;
+        margin: 2mm 0 !important;
+        color: #000 !important;
+    }
+
+    .cert-rank-title {
+        font-size: 1.5rem !important;
+        font-weight: 900 !important;
+        margin: 2mm 0 !important;
+        color: #000 !important;
+    }
+
+    .cert-score {
+        font-weight: 900 !important;
+        background: transparent !important;
+        padding: 0 !important;
+        border: none !important;
+        font-size: 1.2rem !important;
+    }
+
+    .cert-footer {
+        display: flex !important;
+        justify-content: flex-end !important;
+        margin-top: auto !important;
+    }
+
+    .cert-sig-box {
+        width: 80mm !important;
+        text-align: center !important;
+    }
+
+    .sig-line {
+        height: 1px !important;
+        background: #000 !important;
+        margin: 15mm auto 2mm auto !important;
+        width: 100% !important;
+    }
+
+    .sig-role {
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        color: #000 !important;
+    }
+
+    /* Hide podium elements in certificate mode */
+    .winner-highlight {
+        display: block !important;
+        width: 100% !important;
+        transform: none !important;
+        margin: 0 !important;
+    }
+
+    .badge-glass {
+        border: 1px solid #000 !important;
+        background: transparent !important;
+        color: #000 !important;
+    }
+
+    .text-primary,
+    .text-emerald,
+    .text-white,
+    .shimmer-text {
+        color: #000 !important;
+        -webkit-text-fill-color: initial !important;
+        background: none !important;
+    }
+}
+
+/* ==========================================================
+   FORMAL CERTIFICATE STYLES (Screen & Print)
+   ========================================================== */
+.certificate-section {
+    margin: 40px auto;
+    width: 100%;
+    max-width: 900px;
+    padding: 60px;
+    background: #fff;
+    border: 15px double #000;
+    /* Thick formal border */
+    position: relative;
+    box-sizing: border-box;
+    color: #000;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+}
+
+.certificate-header {
+    text-align: center;
+    border-bottom: 2px solid #000;
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+}
+
+.cert-main-title {
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin: 0;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    font-family: 'Times New Roman', serif;
+}
+
+.cert-sub-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 10px 0;
+    letter-spacing: 2px;
+}
+
+.cert-number {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1rem;
+    color: #333;
+}
+
+.cert-body {
+    text-align: center;
+    margin: 50px 0;
+    line-height: 2;
+    font-size: 1.2rem;
+}
+
+.cert-recipient {
+    margin: 40px 0;
+}
+
+.recipient-label {
+    font-size: 1rem;
+    letter-spacing: 4px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.recipient-name {
+    font-size: 4rem;
+    font-weight: 800;
+    text-decoration: underline;
+    margin: 10px 0;
+    color: #000;
+    font-family: 'Times New Roman', serif;
+}
+
+.cert-rank-title {
+    font-size: 2.2rem;
+    font-weight: 900;
+    margin: 20px 0;
+    color: #000;
+}
+
+.cert-score {
+    font-weight: 900;
+    background: #eee;
+    padding: 2px 10px;
+    border: 1px solid #000;
+}
+
+.cert-footer {
+    margin-top: 80px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.cert-sig-box {
+    width: 300px;
+    text-align: center;
+}
+
+.sig-line {
+    height: 1px;
+    background: #000;
+    margin: 80px auto 10px auto;
+    width: 80%;
+}
+
+.sig-role {
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.no-screen {
+    display: none !important;
+}
+
+@media print {
+    .no-screen {
+        display: block !important;
+    }
+}
