@@ -5,7 +5,6 @@ checkLogin();
 
 // Jalankan Sinkronisasi Otomatis
 syncAttendanceToSAW($pdo);
-syncInventoryToSAW($pdo);
 syncProductionToSAW($pdo);
 
 // Ambil kriteria dan alternatif
@@ -48,13 +47,11 @@ require_once 'includes/header.php';
         <div class="header-section mb-5 animate-fadeIn">
             <div class="d-flex justify-content-between align-items-end">
                 <div>
-                    <div class="badge-glass badge-indigo mb-3 uppercase tracking-widest font-monospace">ALGORITHMIC_NORMALIZATION_ENGINE</div>
-                    <h1 class="display-5 fw-bold text-white mb-2">Mesin <span class="shimmer-text">Kalkulasi SAW</span></h1>
+
+                    <h1 class="display-5 fw-bold text-white mb-2">Kalkulasi Penilaian</h1>
                     <p class="text-muted fs-5">Proses transformasi matriks keputusan ke skala normalisasi (0-1) berbasis kriteria.</p>
                 </div>
-                <div class="badge-glass badge-indigo p-3 px-4 shadow-glow-mini">
-                    <i class="fas fa-microchip me-2 text-primary animate-pulse"></i> ENGINE_STATUS: STABLE
-                </div>
+
             </div>
         </div>
 

@@ -3,9 +3,72 @@ require_once 'includes/db.php';
 require_once 'includes/functions.php';
 checkLogin();
 
-// Fetch Ranking Data (Using existing demo logic, but ready for real data)
-$stmt = $pdo->query("SELECT name FROM employees LIMIT 10");
-$employees = $stmt->fetchAll();
+// Fetch Criteria and Weights
+$criteria = $pdo->query("SELECT * FROM criteria ORDER BY id ASC")->fetchAll();
+$employees_raw = $pdo->query("SELECT * FROM employees")->fetchAll();
+
+// 1. Fetch Scores Matrix
+$matrix = [];
+$employee_data = [];
+foreach ($employees_raw as $e) {
+    $employee_data[$e['id']] = $e;
+    foreach ($criteria as $c) {
+        $stmt = $pdo->prepare("SELECT score FROM scores WHERE employee_id = ? AND criteria_id = ?");
+        $stmt->execute([$e['id'], $c['id']]);
+        $matrix[$e['id']][$c['id']] = (float)$stmt->fetchColumn();
+    }
+}
+
+// 2. Normalize and Calculate Preference Value (V)
+$rankings = [];
+if (!empty($matrix) && !empty($criteria)) {
+    // Get max/min for each criteria
+    $crit_stats = [];
+    foreach ($criteria as $c) {
+        $scores_for_crit = array_column($matrix, $c['id']);
+        if (!empty($scores_for_crit)) {
+            $crit_stats[$c['id']] = [
+                'max' => max($scores_for_crit),
+                'min' => min($scores_for_crit)
+            ];
+        }
+    }
+
+    foreach ($matrix as $emp_id => $scores) {
+        $v_score = 0;
+        foreach ($criteria as $c) {
+            $score = $scores[$c['id']];
+            $weight = $c['weight'] / 100;
+
+            if (isset($crit_stats[$c['id']])) {
+                $max = $crit_stats[$c['id']]['max'];
+                $min = $crit_stats[$c['id']]['min'];
+
+                if ($c['type'] == 'benefit' && $max > 0) {
+                    $r = $score / $max;
+                } elseif ($c['type'] == 'cost' && $score > 0) {
+                    $r = $min / $score;
+                } else {
+                    $r = 0;
+                }
+                $v_score += $weight * $r;
+            }
+        }
+        $rankings[] = [
+            'id' => $emp_id,
+            'name' => $employee_data[$emp_id]['name'],
+            'score' => $v_score
+        ];
+    }
+}
+
+// 3. Sort Rankings by Score Descending
+usort($rankings, function($a, $b) {
+    return $b['score'] <=> $a['score'];
+});
+
+$total_evaluated = count($rankings);
+
 
 require_once 'includes/header.php';
 ?>
@@ -22,10 +85,8 @@ require_once 'includes/header.php';
         <div class="header-section mb-5 animate-fadeIn no-screen">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <div class="badge-glass badge-indigo mb-3 font-monospace tracking-widest"><i
-                            class="fas fa-trophy text-cyan me-2"></i> ANALYTICAL_LEADERBOARD_V4</div>
-                    <h1 class="display-5 fw-bold text-white mb-2">Papan Peringkat <span
-                            class="shimmer-text">Akhir</span></h1>
+
+                    <h1 class="display-5 fw-bold text-white mb-2">Laporan Peringkat Akhir</h1>
                     <p class="text-muted fs-5">Hasil konsolidasi preferensi personel berdasarkan kriteria SAW
                         terverifikasi.</p>
                 </div>
@@ -50,16 +111,16 @@ require_once 'includes/header.php';
 
                         <!-- Rank 2 -->
                         <div class="text-center stagger-1 no-print" style="width: 220px;">
-                            <div class="text-muted tiny fw-bold mb-4 tracking-widest uppercase opacity-50">Runner Up
+                            <div class="text-muted tiny fw-bold mb-4 tracking-widest uppercase opacity-50">Juara Kedua
                             </div>
                             <div class="glass p-4 mb-4 mx-auto podium-step step-2"
                                 style="width: 140px; height: 140px; border-radius: 35px; display: flex; align-items: center; justify-content: center; border-color: rgba(255,255,255,0.05);">
                                 <i class="fas fa-medal text-slate-400 fa-3x opacity-50"></i>
                             </div>
                             <h4 class="text-white fw-bold mb-1 fs-5">
-                                <?= htmlspecialchars($employees[1]['name'] ?? 'SUBYEK_B') ?>
+                                <?= htmlspecialchars($rankings[1]['name'] ?? 'PENDING...') ?>
                             </h4>
-                            <div class="text-primary fw-bold font-monospace fs-5">0.8920</div>
+                            <div class="text-primary fw-bold font-monospace fs-5"><?= number_format($rankings[1]['score'] ?? 0, 4) ?></div>
                         </div>
 
                         <!-- Rank 1 (The Winner / Certificate Focus) -->
@@ -84,7 +145,7 @@ require_once 'includes/header.php';
                                         <div class="cert-recipient">
                                             <p class="recipient-label">DIBERIKAN KEPADA:</p>
                                             <h2 class="recipient-name">
-                                                <?= htmlspecialchars($employees[0]['name'] ?? 'SUBYEK_A') ?>
+                                                <?= htmlspecialchars($rankings[0]['name'] ?? 'PENDING...') ?>
                                             </h2>
                                         </div>
 
@@ -93,7 +154,7 @@ require_once 'includes/header.php';
 
                                         <div class="cert-details">
                                             <p>Dengan total indeks preferensi (V) sebesar: <span
-                                                    class="cert-score">0.9650</span></p>
+                                                    class="cert-score"><?= number_format($rankings[0]['score'] ?? 0, 4) ?></span></p>
                                         </div>
 
                                         <p class="cert-closing">Demikian penetapan ini dibuat secara objektif
@@ -113,16 +174,16 @@ require_once 'includes/header.php';
                                 </div>
                             </div>
 
-                            <div class="badge-glass badge-indigo mb-4 shimmer-text scale-125 no-print">TOP PERFORMANCE
+                            <div class="badge-glass badge-indigo mb-4 shimmer-text scale-125 no-print">PERFORMA TERBAIK
                             </div>
                             <div class="glass p-5 mb-4 mx-auto podium-step step-1 no-print"
                                 style="width: 200px; height: 200px; border-radius: 45px; background: linear-gradient(135deg, rgba(99,102,241,0.25) 0%, transparent 100%); display: flex; align-items: center; justify-content: center; border: 2px solid var(--primary); box-shadow: 0 0 60px var(--primary-glow);">
                                 <i class="fas fa-crown text-primary fa-6x animate-pulse"></i>
                             </div>
                             <h2 class="winner-name text-white fw-bold mb-1 display-6 no-print">
-                                <?= htmlspecialchars($employees[0]['name'] ?? 'SUBYEK_A') ?>
+                                <?= htmlspecialchars($rankings[0]['name'] ?? 'PENDING...') ?>
                             </h2>
-                            <div class="winner-score text-primary display-4 fw-bold font-monospace no-print">0.9650
+                            <div class="winner-score text-primary display-4 fw-bold font-monospace no-print"><?= number_format($rankings[0]['score'] ?? 0, 4) ?>
                             </div>
                             <div class="mt-4 no-print">
                                 <button onclick="printCert()" class="btn-premium px-5 py-3 shadow-lg"
@@ -134,17 +195,18 @@ require_once 'includes/header.php';
 
                         <!-- Rank 3 -->
                         <div class="text-center stagger-3 no-print" style="width: 220px;">
-                            <div class="text-muted tiny fw-bold mb-4 tracking-widest uppercase opacity-50">Third Place
+                            <div class="text-muted tiny fw-bold mb-4 tracking-widest uppercase opacity-50">Juara Ketiga
                             </div>
                             <div class="glass p-4 mb-4 mx-auto podium-step step-3"
                                 style="width: 120px; height: 120px; border-radius: 30px; display: flex; align-items: center; justify-content: center; border-color: rgba(255,255,255,0.05);">
                                 <i class="fas fa-medal text-amber-700 fa-2x opacity-30"></i>
                             </div>
                             <h4 class="text-white fw-bold mb-1 fs-5">
-                                <?= htmlspecialchars($employees[2]['name'] ?? 'SUBYEK_C') ?>
+                                <?= htmlspecialchars($rankings[2]['name'] ?? 'PENDING...') ?>
                             </h4>
-                            <div class="text-primary fw-bold font-monospace fs-5">0.8410</div>
+                            <div class="text-primary fw-bold font-monospace fs-5"><?= number_format($rankings[2]['score'] ?? 0, 4) ?></div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -156,7 +218,7 @@ require_once 'includes/header.php';
                         class="p-4 border-bottom border-white border-opacity-10 d-flex justify-content-between align-items-center bg-white bg-opacity-5">
                         <h3 class="text-white fs-5 fw-bold m-0"><i class="fas fa-list-ol text-primary me-2"></i>
                             Papan Peringkat</h3>
-                        <span class="badge-glass badge-indigo"><?= count($employees) ?> Data</span>
+                        <span class="badge-glass badge-indigo"><?= $total_evaluated ?> Data</span>
                     </div>
                     <div class="premium-table-container">
                         <table class="premium-table">
@@ -170,12 +232,12 @@ require_once 'includes/header.php';
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (empty($employees)): ?>
+                                <?php if (empty($rankings)): ?>
                                     <tr>
                                         <td colspan="5" class="text-center py-5 text-muted italic">Data kosong.</td>
                                     </tr>
                                 <?php else: ?>
-                                    <?php foreach ($employees as $index => $emp): ?>
+                                    <?php foreach ($rankings as $index => $rank): ?>
                                         <tr class="<?= $index < 3 ? 'bg-white bg-opacity-5' : '' ?>">
                                             <td class="ps-5 text-center">
                                                 <div class="fw-bold fs-4 <?= $index < 3 ? 'text-primary' : 'text-muted' ?>">
@@ -185,15 +247,15 @@ require_once 'includes/header.php';
                                                 <div class="d-flex align-items-center gap-3">
                                                     <div class="bg-primary rounded-circle"
                                                         style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; background: rgba(99,102,241,0.2) !important; border: 1px solid var(--primary-glow);">
-                                                        <?= substr($emp['name'], 0, 1) ?>
+                                                        <?= substr($rank['name'], 0, 1) ?>
                                                     </div>
-                                                    <div class="fw-bold text-white fs-5"><?= htmlspecialchars($emp['name']) ?>
+                                                    <div class="fw-bold text-white fs-5"><?= htmlspecialchars($rank['name']) ?>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="fw-bold text-primary font-monospace fs-4">
-                                                    <?= number_format(0.9650 - ($index * 0.0512), 4) ?>
+                                                    <?= number_format($rank['score'], 4) ?>
                                                 </div>
                                             </td>
                                             <td>
@@ -206,7 +268,7 @@ require_once 'includes/header.php';
                                             <td class="pe-5 text-end">
                                                 <div class="d-inline-flex align-items-center gap-2 text-emerald fw-bold font-monospace"
                                                     style="letter-spacing: 0.1em; font-size: 0.75rem;">
-                                                    <i class="fas fa-shield-check"></i> VERIFIED
+                                                    <i class="fas fa-shield-check"></i> TERVERIFIKASI
                                                 </div>
                                             </td>
                                         </tr>
@@ -215,6 +277,7 @@ require_once 'includes/header.php';
                             </tbody>
                         </table>
                     </div>
+
                 </div>
             </div>
         </div>

@@ -6,7 +6,7 @@ require_once __DIR__ . '/../includes/db.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Industrial Terminal - Reegioella Hub</title>
+    <title>Terminal Industri - Reegioella Hub</title>
     <!-- FontAwesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Modern Design System -->
@@ -158,9 +158,9 @@ require_once __DIR__ . '/../includes/db.php';
 
     <div class="terminal-container">
         <div class="mb-5">
-            <div class="status-badge-kiosk"><i class="fas fa-tower-broadcast me-2"></i> Industrial Hub Terminal</div>
+            <div class="status-badge-kiosk"><i class="fas fa-tower-broadcast me-2"></i> Terminal Hub Industri</div>
             <div id="digital-clock" class="kiosk-clock">00:00:00</div>
-            <div class="text-white-50 fw-bold small tracking-widest text-uppercase mt-2" style="letter-spacing: 0.6em;">REEGIOELLA SECURE NODE</div>
+
         </div>
 
         <div class="input-mega-box">
@@ -178,14 +178,14 @@ require_once __DIR__ . '/../includes/db.php';
                 <i class="fas fa-shield-check text-primary fs-4"></i>
                 <div class="text-start">
                     <div class="text-white fw-bold tiny tracking-widest">AES-256</div>
-                    <div class="text-muted tiny">ENCRYPTION</div>
+                    <div class="text-muted tiny">ENKRIPSI</div>
                 </div>
             </div>
             <div class="d-flex align-items-center gap-3">
                 <i class="fas fa-bolt-lightning text-cyan fs-4"></i>
                 <div class="text-start">
-                    <div class="text-white fw-bold tiny tracking-widest">INSTANT</div>
-                    <div class="text-muted tiny">SAW SYNC</div>
+                    <div class="text-white fw-bold tiny tracking-widest">INSTAN</div>
+                    <div class="text-muted tiny">SINKRONISASI SAW</div>
                 </div>
             </div>
         </div>
@@ -203,9 +203,9 @@ require_once __DIR__ . '/../includes/db.php';
             <div id="res-icon" style="font-size: 10rem; margin-bottom: 40px; filter: drop-shadow(0 0 30px currentColor);">
                 <i class="fas fa-circle-check"></i>
             </div>
-            <div class="text-muted small fw-bold tracking-widest text-uppercase mb-2 opacity-50 font-monospace">IDENTIFIED_PERSONEL</div>
+            <div class="text-muted small fw-bold tracking-widest text-uppercase mb-2 opacity-50 font-monospace">DATA PERSONEL</div>
             <div id="res-name" class="display-3 fw-bold mb-3 shimmer-text brand-font">NAME</div>
-            <div id="res-msg" class="text-muted fs-4 fw-bold tracking-widest text-uppercase">ACCESS_GRANTED</div>
+            <div id="res-msg" class="text-muted fs-4 fw-bold tracking-widest text-uppercase">ACCESS GRANTED</div>
         </div>
     </div>
 
@@ -241,12 +241,12 @@ require_once __DIR__ . '/../includes/db.php';
                 const data = await response.json();
 
                 if (data.success) {
-                    showResult(true, data.name, "ACCESS_AUTHORIZED");
+                    showResult(true, data.name, "OTORISASI_BERHASIL");
                 } else {
-                    showResult(false, "REJECTED", data.message || "INVALID_CREDENTIALS");
+                    showResult(false, "DITOLAK", data.message || "ID_TIDAK_VALID");
                 }
             } catch (err) {
-                showResult(false, "ERROR", "SYSTEM_OFFLINE_FAILSAFE");
+                showResult(false, "ERROR", "SISTEM_OFFLINE_KEGAGALAN");
             } finally {
                 input.value = '';
                 input.disabled = false;

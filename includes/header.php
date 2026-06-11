@@ -33,11 +33,5 @@ $base_url = (basename(dirname($_SERVER['PHP_SELF'])) == 'inventori') ? '../dss-s
 
 <body>
     <?php include $base_url . 'includes/mobile_nav.php'; ?>
-    <!-- Floating Glass Orbs Background -->
-    <div class="orb-container">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-        <div class="orb orb-4"></div>
-    </div>
+    <!-- Floating background elements removed for stable UI -->
     <?php // Removed app-container here as it is handled by individual page layouts ?>

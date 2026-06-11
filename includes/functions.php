@@ -1,5 +1,53 @@
 <?php
 /**
+ * Automatically initializes weekly attendance records (Monday to Saturday) for all employees with 'Absent' status.
+ * Runs once a week (based on checking if the current Monday is already initialized).
+ */
+function initializeWeeklyAttendance($pdo)
+{
+    $today_dayofweek = date('N'); // 1 (Monday) to 7 (Sunday)
+    $monday_time = time() - (($today_dayofweek - 1) * 86400);
+    $monday = date('Y-m-d', $monday_time);
+    
+    // Check if the current week is already initialized for all employees
+    $emp_count = $pdo->query("SELECT COUNT(*) FROM employees")->fetchColumn();
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM attendance WHERE date = ?");
+    $stmt->execute([$monday]);
+    $attendance_count = $stmt->fetchColumn();
+    
+    if ($attendance_count >= $emp_count) {
+        return; // Already initialized for all employees
+    }
+    
+    // Generate dates for Monday to Saturday (6 days)
+    $dates = [];
+    for ($i = 0; $i < 6; $i++) {
+        $dates[] = date('Y-m-d', $monday_time + ($i * 86400));
+    }
+    
+    $employees = $pdo->query("SELECT id FROM employees")->fetchAll(PDO::FETCH_COLUMN);
+    if (empty($employees)) {
+        return;
+    }
+    
+    try {
+        $pdo->beginTransaction();
+        $stmt = $pdo->prepare("INSERT IGNORE INTO attendance (employee_id, date, status) VALUES (?, ?, 'Absent')");
+        foreach ($employees as $emp_id) {
+            foreach ($dates as $date) {
+                $stmt->execute([$emp_id, $date]);
+            }
+        }
+        $pdo->commit();
+    } catch (Exception $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        error_log("Failed to initialize weekly attendance: " . $e->getMessage());
+    }
+}
+
+/**
  * Synchronizes attendance percentage to the SAW Scores table.
  * Automatically creates the 'Absensi' criterion if it doesn't exist.
  */
@@ -10,26 +58,34 @@ function syncAttendanceToSAW($pdo)
         $stmt = $pdo->prepare("SELECT id FROM criteria WHERE name LIKE '%Absensi%' OR name LIKE '%Attendance%' OR name LIKE '%Kehadiran%' LIMIT 1");
         $stmt->execute();
         $crit = $stmt->fetch();
-
+ 
         if (!$crit) {
-            // Create default Absensi criterion
-            $stmt = $pdo->prepare("INSERT INTO criteria (name, weight, type) VALUES ('Absensi', 10.00, 'cost')");
+            // Create default Absensi criterion as BENEFIT
+            $stmt = $pdo->prepare("INSERT INTO criteria (name, weight, type) VALUES ('Absensi', 10.00, 'benefit')");
             $stmt->execute();
             $crit_id = $pdo->lastInsertId();
         } else {
             $crit_id = $crit['id'];
+            // Force update existing criterion to benefit if it was cost
+            $pdo->prepare("UPDATE criteria SET type = 'benefit' WHERE id = ? AND type = 'cost'")->execute([$crit_id]);
         }
 
-        // 2. Calculate percentages for each employee
-        // Based on all logs in the 'attendance' table
-        $stmt = $pdo->query("SELECT 
+ 
+        // 2. Calculate percentages for each employee based on the CURRENT WEEK ONLY
+        // Get Monday of current week
+        $today_dayofweek = date('N');
+        $monday = date('Y-m-d', time() - (($today_dayofweek - 1) * 86400));
+
+        $stmt = $pdo->prepare("SELECT 
                                 e.id as emp_id,
-                                COUNT(CASE WHEN a.status = 'Present' THEN 1 END) as present_count,
+                                COUNT(CASE WHEN a.status IN ('Present', 'Late') THEN 1 END) as present_count,
                                 COUNT(a.id) as total_days
                              FROM employees e
-                             LEFT JOIN attendance a ON e.id = a.employee_id
+                             LEFT JOIN attendance a ON e.id = a.employee_id AND a.date >= ?
                              GROUP BY e.id");
+        $stmt->execute([$monday]);
         $stats = $stmt->fetchAll();
+
 
         // 3. Update scores table
         $pdo->beginTransaction();
@@ -45,13 +101,11 @@ function syncAttendanceToSAW($pdo)
             $typeStmt->execute([$crit_id]);
             $crit_type = $typeStmt->fetchColumn();
 
-            if ($crit_type === 'cost') {
-                $score = ($row['total_days'] > 0) ? (($row['total_days'] - $row['present_count']) / $row['total_days']) * 100 : 0;
-            } else {
-                $score = ($row['total_days'] > 0) ? ($row['present_count'] / $row['total_days']) * 100 : 0;
-            }
+            // Always use presence rate since we now force the criterion to be benefit
+            $score = ($row['total_days'] > 0) ? ($row['present_count'] / $row['total_days']) * 100 : 0;
             
             $updateStmt->execute([$row['emp_id'], $crit_id, $score]);
+
         }
         $pdo->commit();
 
@@ -84,78 +138,28 @@ function initializeEmployeeScores($pdo, $emp_id)
 }
 
 /**
- * Synchronizes inventory productivity (items handled) to the SAW Scores table.
- * Automatically creates the 'Produktivitas' criterion if it doesn't exist.
- */
-function syncInventoryToSAW($pdo)
-{
-    try {
-        // 1. Ensure "Produktivitas" criterion exists
-        $stmt = $pdo->prepare("SELECT id FROM criteria WHERE name LIKE '%Produktivitas%' OR name LIKE '%Productivity%' OR name LIKE '%Hasil Kerja%' LIMIT 1");
-        $stmt->execute();
-        $crit = $stmt->fetch();
-
-        if (!$crit) {
-            // Create default Productivity criterion
-            $stmt = $pdo->prepare("INSERT INTO criteria (name, weight, type) VALUES ('Produktivitas', 0.15, 'benefit')");
-            $stmt->execute();
-            $crit_id = $pdo->lastInsertId();
-        } else {
-            $crit_id = $crit['id'];
-        }
-
-        // 2. Calculate productivity for each employee
-        // We count total items handled (both incoming and outgoing)
-        $stmt = $pdo->query("SELECT 
-                                e.id as emp_id,
-                                (
-                                    SELECT COUNT(*) FROM inventori_reggioella.barang_masuk bm WHERE bm.employee_id = e.id
-                                ) + (
-                                    SELECT COUNT(*) FROM inventori_reggioella.barang_keluar bk WHERE bk.employee_id = e.id
-                                ) as total_handled
-                             FROM employees e");
-        $stats = $stmt->fetchAll();
-
-        // 3. Update scores table
-        $pdo->beginTransaction();
-        $updateStmt = $pdo->prepare("INSERT INTO scores (employee_id, criteria_id, score) 
-                                     VALUES (?, ?, ?) 
-                                     ON DUPLICATE KEY UPDATE score = VALUES(score)");
-
-        foreach ($stats as $row) {
-            // We use the count directly as the score. SAW normalization will handle the scaling.
-            $updateStmt->execute([$row['emp_id'], $crit_id, (float) $row['total_handled']]);
-        }
-        $pdo->commit();
-
-        return true;
-    } catch (Exception $e) {
-        if ($pdo->inTransaction())
-            $pdo->rollBack();
-        error_log("Inventory Sync Error: " . $e->getMessage());
-        return false;
-    }
-}
-/**
  * Synchronizes daily production achievements (units produced) to the SAW Scores table.
  * Automatically creates the 'Hasil Produksi' criterion if it doesn't exist.
  */
 function syncProductionToSAW($pdo)
 {
     try {
-        // 1. Ensure "Hasil Produksi" criterion exists
-        $stmt = $pdo->prepare("SELECT id FROM criteria WHERE name LIKE '%Produksi%' OR name LIKE '%Achievement%' LIMIT 1");
+        // 1. Ensure "Produktivitas" criterion exists, search for Produksi or Productivity
+        $stmt = $pdo->prepare("SELECT id FROM criteria WHERE name LIKE '%Produksi%' OR name LIKE '%Produktivitas%' OR name LIKE '%Productivity%' LIMIT 1");
         $stmt->execute();
         $crit = $stmt->fetch();
 
         if (!$crit) {
-            // Create default Production criterion
-            $stmt = $pdo->prepare("INSERT INTO criteria (name, weight, type) VALUES ('Hasil Produksi', 0.25, 'benefit')");
+            // Create default Produktivitas criterion
+            $stmt = $pdo->prepare("INSERT INTO criteria (name, weight, type) VALUES ('Produktivitas', 20.00, 'benefit')");
             $stmt->execute();
             $crit_id = $pdo->lastInsertId();
         } else {
             $crit_id = $crit['id'];
+            // Force rename to Produktivitas for consistency
+            $pdo->prepare("UPDATE criteria SET name = 'Produktivitas' WHERE id = ?")->execute([$crit_id]);
         }
+
 
         // 2. Calculate total production for each employee
         $stmt = $pdo->query("SELECT 

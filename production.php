@@ -9,6 +9,7 @@ $message = "";
 $crit_kualitas = $pdo->query("SELECT id FROM criteria WHERE name='Kualitas Kerja'")->fetchColumn();
 $crit_disiplin = $pdo->query("SELECT id FROM criteria WHERE name='Disiplin'")->fetchColumn();
 $crit_kerjasama = $pdo->query("SELECT id FROM criteria WHERE name='Kerjasama'")->fetchColumn();
+$crit_absensi = $pdo->query("SELECT id FROM criteria WHERE name='Absensi'")->fetchColumn();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save_penilaian'])) {
     $scores_kualitas = $_POST['score_kualitas'] ?? [];
@@ -46,7 +47,9 @@ $employees = $pdo->query("SELECT id, name, nik FROM employees ORDER BY name ASC"
 // Get existing scores for these criteria to pre-fill the inputs
 $existing_scores = [];
 if ($crit_kualitas && $crit_disiplin && $crit_kerjasama) {
-    $stmt = $pdo->query("SELECT employee_id, criteria_id, score FROM scores WHERE criteria_id IN ($crit_kualitas, $crit_disiplin, $crit_kerjasama)");
+    $ids = array_filter([$crit_kualitas, $crit_disiplin, $crit_kerjasama, $crit_absensi]);
+    $ids_str = implode(',', $ids);
+    $stmt = $pdo->query("SELECT employee_id, criteria_id, score FROM scores WHERE criteria_id IN ($ids_str)");
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $existing_scores[$row['employee_id']][$row['criteria_id']] = $row['score'];
     }
@@ -61,20 +64,12 @@ require_once 'includes/header.php';
         <div class="header-section mb-5 animate-fadeIn">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <div class="badge-glass badge-indigo mb-3 font-monospace">
-                        <i class="fas fa-clipboard-check me-2 text-primary"></i> EVALUATION_CONTROL_V2.0
-                    </div>
+
                     <h1 class="display-5 fw-bold text-white mb-2">Log <span class="shimmer-text">Penilaian</span></h1>
                     <p class="text-muted fs-5">Inisialisasi input massal untuk Kualitas Kerja, Disiplin, dan Kerjasama.</p>
                 </div>
                 <div>
-                    <div class="glass p-3 px-4 d-flex align-items-center gap-3 shadow-glow-mini">
-                        <i class="fas fa-database text-secondary fs-4 animate-pulse"></i>
-                        <div>
-                            <div class="text-white fw-bold small">SYNC STATUS</div>
-                            <div class="text-secondary tiny fw-bold opacity-75">DATABASE CONNECTED</div>
-                        </div>
-                    </div>
+                    <!-- Section widget removed for a cleaner look -->
                 </div>
             </div>
         </div>
@@ -123,10 +118,11 @@ require_once 'includes/header.php';
                             <table class="premium-table">
                                 <thead>
                                     <tr>
-                                        <th class="ps-4" style="width: 25%">Informasi Personel</th>
-                                        <th class="text-center" style="width: 25%">Kualitas Kerja (25%)</th>
-                                        <th class="text-center" style="width: 25%">Disiplin (20%)</th>
-                                        <th class="text-center pe-4" style="width: 25%">Kerjasama (15%)</th>
+                                        <th class="ps-4" style="width: 20%">Informasi Personel</th>
+                                        <th class="text-center" style="width: 20%">Kualitas Kerja (25%)</th>
+                                        <th class="text-center" style="width: 20%">Disiplin (20%)</th>
+                                        <th class="text-center" style="width: 20%">Kerjasama (15%)</th>
+                                        <th class="text-center pe-4" style="width: 20%">Absensi (AUTO)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -135,6 +131,7 @@ require_once 'includes/header.php';
                                         $val_kualitas = $existing_scores[$emp_id][$crit_kualitas] ?? 0;
                                         $val_disiplin = $existing_scores[$emp_id][$crit_disiplin] ?? 0;
                                         $val_kerjasama = $existing_scores[$emp_id][$crit_kerjasama] ?? 0;
+                                        $val_absensi = $existing_scores[$emp_id][$crit_absensi] ?? 0;
                                     ?>
                                     <tr>
                                         <td class="ps-4">
@@ -165,6 +162,12 @@ require_once 'includes/header.php';
                                                        class="form-control-glass text-center fs-6" 
                                                        style="width: 100px; border-radius: 8px; padding: 8px;" 
                                                        value="<?= (float)$val_kerjasama ?>" min="0" max="100">
+                                            </div>
+                                        </td>
+                                        <td class="pe-4">
+                                            <div class="d-flex flex-column align-items-center">
+                                                <div class="fw-bold text-primary fs-5"><?= (float)$val_absensi ?></div>
+                                                <div class="badge-glass badge-emerald mt-1" style="font-size: 0.5rem;"><i class="fas fa-sync fa-spin"></i> OTOMATIS</div>
                                             </div>
                                         </td>
                                     </tr>

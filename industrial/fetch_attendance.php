@@ -7,12 +7,12 @@ try {
 
     // 1. Get Summary Stats
     // Hadir
-    $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM attendance WHERE date = ? AND status = 'Present'");
+    $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM attendance WHERE date = ? AND status IN ('Present', 'Late')");
     $stmt->execute([$today]);
     $stats['hadir'] = $stmt->fetch()['count'];
 
-    // Terlambat (after 08:00)
-    $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM attendance WHERE date = ? AND time_in > '08:00:00'");
+    // Terlambat (after 08:30)
+    $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM attendance WHERE date = ? AND status = 'Late'");
     $stmt->execute([$today]);
     $stats['terlambat'] = $stmt->fetch()['count'];
 

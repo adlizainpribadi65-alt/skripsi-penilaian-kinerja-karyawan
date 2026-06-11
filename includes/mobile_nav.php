@@ -13,10 +13,6 @@ $inv_prefix = $is_inv ? '' : '../inventori/';
             <div class="mobile-nav-icon"><i class="fas fa-columns"></i></div>
             <span>Home</span>
         </a>
-        <a href="<?= $inv_prefix ?>dashboard.php" class="mobile-nav-item <?= $is_inv ? 'active' : '' ?>">
-            <div class="mobile-nav-icon"><i class="fas fa-boxes-stacked"></i></div>
-            <span>Stock</span>
-        </a>
         <a href="<?= $prefix ?>attendance.php"
             class="mobile-nav-item <?= $current_page == 'attendance.php' ? 'active' : '' ?>">
             <div class="mobile-nav-icon"><i class="fas fa-calendar-check"></i></div>

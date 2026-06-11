@@ -1,59 +1,45 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-@property --angle {
-    syntax: '<angle>';
-    initial-value: 0deg;
-    inherits: false;
-}
-
-@keyframes rotate-angle {
-    0% {
-        --angle: 0deg;
-    }
-
-    100% {
-        --angle: 360deg;
-    }
-}
+/* Removed futuristic keyframes */
 
 :root {
     /* Base Colors - Light Theme (Default) - Sophisticated Slate/Indigo */
-    --bg-body: #f1f5f9;
-    --bg-card: rgba(255, 255, 255, 0.75);
-    --text-main: #0f172a;
-    --text-muted: #475569;
+    --bg-body: #f8fafc;
+    --bg-card: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
     --text-dim: #94a3b8;
 
-    --primary: #4f46e5;
-    --primary-glow: rgba(79, 70, 229, 0.15);
+    --primary: #2563eb;
+    --primary-glow: rgba(37, 99, 235, 0.05);
     --secondary: #059669;
-    --accent: #e11d48;
+    --accent: #dc2626;
     --cyan: #0891b2;
 
-    --border-glass: rgba(0, 0, 0, 0.05);
-    --glass-blur: blur(20px);
-    --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
-    --inner-glow: inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+    --border-glass: #e2e8f0;
+    --glass-blur: blur(0px);
+    --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --inner-glow: none;
 
-    --radius-lg: 24px;
-    --radius-xl: 32px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
 }
 
 [data-theme='dark'] {
     /* Base Colors - Dark Theme Override - Deep Space Nebula */
-    --bg-body: #020617;
-    --bg-card: rgba(15, 23, 42, 0.7);
-    --text-main: #f1f5f9;
+    --bg-body: #0f172a;
+    --bg-card: #1e293b;
+    --text-main: #f8fafc;
     --text-muted: #94a3b8;
     --text-dim: #64748b;
 
-    --primary: #818cf8;
-    --primary-glow: rgba(129, 140, 248, 0.25);
+    --primary: #3b82f6;
+    --primary-glow: rgba(59, 130, 246, 0.1);
 
-    --border-glass: rgba(255, 255, 255, 0.06);
-    --glass-blur: blur(25px);
-    --card-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
-    --inner-glow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+    --border-glass: #334155;
+    --glass-blur: blur(0px);
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --inner-glow: none;
 }
 
 /* ==========================================================
@@ -167,12 +153,9 @@ a {
 /* Elite Glass 6.0 - Deep Layering */
 .glass {
     background: var(--bg-card);
-    backdrop-filter: var(--glass-blur) saturate(180%);
-    -webkit-backdrop-filter: var(--glass-blur) saturate(180%);
     border: 1px solid var(--border-glass);
     border-radius: var(--radius-lg);
-    box-shadow: var(--card-shadow), var(--inner-glow);
-    overflow: hidden;
+    box-shadow: var(--card-shadow);
     position: relative;
     transition: background 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease;
 }
@@ -203,6 +186,8 @@ a {
 /* Premium Table System */
 .premium-table-container {
     overflow-x: auto;
+    overflow-y: auto;
+    position: relative;
     width: 100%;
     scrollbar-width: thin;
     scrollbar-color: var(--border-glass) transparent;
@@ -216,30 +201,34 @@ a {
 }
 
 .premium-table thead th {
-    background: rgba(255, 255, 255, 0.02);
-    padding: 20px 24px;
+    background: var(--bg-body);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    padding: 24px;
     font-size: 0.72rem;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.2em;
     color: var(--text-dim);
-    border-bottom: 1px solid var(--border-glass);
+    border-bottom: 2px solid var(--border-glass);
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 20;
 }
 
 .premium-table tbody tr {
-    transition: all 0.3s ease;
+    transition: background 0.3s ease, transform 0.3s ease;
+    position: relative;
+    z-index: 1;
 }
 
 .premium-table tbody tr:hover {
-    background: rgba(99, 102, 241, 0.03);
-    transform: scale(1.002);
+    background: rgba(99, 102, 241, 0.05);
+    z-index: 2;
 }
 
 .premium-table td {
-    padding: 20px 24px;
+    padding: 24px;
     border-bottom: 1px solid var(--border-glass);
     vertical-align: middle;
 }
@@ -279,23 +268,18 @@ a {
 
 /* Premium Buttons */
 .btn-premium {
-    background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
-    color: white;
+    background: var(--primary);
+    color: #fff !important;
     border: none;
+    border-radius: 8px;
     padding: 12px 28px;
-    border-radius: 14px;
     font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 10px 25px -5px var(--primary-glow);
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.2s;
     cursor: pointer;
 }
-
 .btn-premium:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 20px 40px -10px var(--primary-glow);
+    background: #1d4ed8;
+    transform: translateY(-1px);
 }
 
 /* Statistics & Cards */
@@ -308,6 +292,11 @@ a {
 .bento-card {
     padding: 30px;
     animation: entrance-fade 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Stagger animations disabled */
+.stagger-1, .stagger-2, .stagger-3, .stagger-4 {
+    animation-delay: 0s !important;
 }
 
 @keyframes entrance-fade {
@@ -351,6 +340,10 @@ a {
 
 /* Badges */
 .badge-glass {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    gap: 6px;
     padding: 6px 14px;
     border-radius: 100px;
     font-size: 0.65rem;
@@ -380,12 +373,7 @@ a {
 
 /* Utilities */
 .shimmer-text {
-    background: linear-gradient(90deg, var(--primary), #6366f1, var(--primary));
-    background-size: 200% auto;
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: shimmer 5s infinite linear;
+    color: var(--primary);
 }
 
 @keyframes shimmer {
@@ -395,15 +383,22 @@ a {
 }
 
 /* Theme-Aware Color Utilities */
-.text-cyan { color: var(--cyan) !important; }
-.text-accent { color: var(--accent) !important; }
-.text-emerald { color: var(--secondary) !important; }
+.text-cyan {
+    color: var(--cyan) !important;
+}
+
+.text-accent {
+    color: var(--accent) !important;
+}
+
+.text-emerald {
+    color: var(--secondary) !important;
+}
 
 .glass-pane {
     background: rgba(0, 0, 0, 0.03);
     border: 1px solid var(--border-glass);
-    border-radius: 14px;
-    backdrop-filter: blur(10px);
+    border-radius: 8px;
 }
 
 [data-theme='dark'] .glass-pane {

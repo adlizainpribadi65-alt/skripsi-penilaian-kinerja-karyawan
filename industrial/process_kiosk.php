@@ -49,10 +49,13 @@ try {
     // 5. Update the main 'attendance' table exactly representing the current scan
     $time_now = date('H:i:s');
     if ($type === 'IN') {
+        $status = ($time_now > '08:30:00') ? 'Late' : 'Present';
         $stmt = $pdo->prepare("INSERT INTO attendance (employee_id, date, status, time_in) 
-                               VALUES (?, ?, 'Present', ?) 
-                               ON DUPLICATE KEY UPDATE status = 'Present', time_in = IF(time_in IS NULL, ?, time_in)");
-        $stmt->execute([$emp_id, $today, $time_now, $time_now]);
+                               VALUES (?, ?, ?, ?) 
+                               ON DUPLICATE KEY UPDATE 
+                                   status = IF(time_in IS NULL, VALUES(status), status), 
+                                   time_in = IF(time_in IS NULL, VALUES(time_in), time_in)");
+        $stmt->execute([$emp_id, $today, $status, $time_now]);
     } else {
         $stmt = $pdo->prepare("UPDATE attendance SET time_out = ? WHERE employee_id = ? AND date = ?");
         $stmt->execute([$time_now, $emp_id, $today]);

@@ -34,8 +34,9 @@ require_once 'includes/header.php';
         <div class="header-section mb-5 d-flex justify-content-between align-items-end animate-fadeIn">
             <div>
                 <div class="brand-font text-primary tracking-widest small mb-1">MONITORING REAL-TIME</div>
-                <h1 class="display-5 fw-bold text-white">Log & Riwayat <span class="shimmer-text">Presensi</span></h1>
-                <p class="text-muted fs-5">Pantau aktivitas kehadiran dan pindai identitas personel garmen secara instan.</p>
+                <h1 class="display-5 fw-bold text-white">Log & Riwayat Presensi</h1>
+                <p class="text-muted fs-5">Pantau aktivitas kehadiran dan pindai identitas personel garmen secara
+                    instan.</p>
             </div>
             <div class="glass-pane p-2 px-4 d-flex align-items-center mb-2">
                 <div class="status-dot-blink bg-secondary me-2"></div>
@@ -88,7 +89,8 @@ require_once 'includes/header.php';
                 <div class="glass p-0 overflow-hidden shadow-lg">
                     <div class="p-4 border-bottom border-white border-opacity-10">
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h3 class="text-white fs-5 fw-bold m-0"><i class="fas fa-history text-primary me-2"></i> Riwayat Kehadiran</h3>
+                            <h3 class="text-white fs-5 fw-bold m-0"><i class="fas fa-history text-primary me-2"></i>
+                                Riwayat Kehadiran</h3>
                             <button onclick="exportToCSV()" class="btn-premium py-2 px-3">
                                 <i class="fas fa-file-excel"></i> CETAK EXCEL
                             </button>
@@ -96,7 +98,8 @@ require_once 'includes/header.php';
                         <!-- Filter Bar -->
                         <div class="row g-2">
                             <div class="col-md-5">
-                                <input type="text" id="logSearch" class="form-control-glass w-100" placeholder="Cari Nama atau NIK..." onkeyup="filterLogs()">
+                                <input type="text" id="logSearch" class="form-control-glass w-100"
+                                    placeholder="Cari Nama atau NIK..." onkeyup="filterLogs()">
                             </div>
                             <div class="col-md-4">
                                 <select id="statusFilter" class="form-control-glass w-100" onchange="filterLogs()">
@@ -107,7 +110,8 @@ require_once 'includes/header.php';
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <input type="date" id="dateFilter" class="form-control-glass w-100" onchange="filterLogs()">
+                                <input type="date" id="dateFilter" class="form-control-glass w-100"
+                                    onchange="filterLogs()">
                             </div>
                         </div>
                     </div>
@@ -116,40 +120,50 @@ require_once 'includes/header.php';
                             <thead>
                                 <tr>
                                     <th class="ps-4">Waktu</th>
-                                    <th>Identitas Personel</th>
-                                    <th>Status Logging</th>
-                                    <th class="text-end pe-4">Klasifikasi</th>
+                                    <th class="text-center">Identitas Personel</th>
+                                    <th class="text-center">Status Logging</th>
+                                    <th class="text-center pe-4">Klasifikasi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach($logs as $log): ?>
-                                <tr class="log-row" data-name="<?= strtolower($log['name']) ?>" data-nik="<?= $log['nik'] ?>" data-status="<?= $log['status'] ?>" data-date="<?= $log['date'] ?>">
-                                    <td class="ps-4">
-                                        <div class="text-white small fw-bold"><?= htmlspecialchars($log['time_in'] ?? '--:--') ?></div>
-                                        <div class="text-muted tiny" style="font-size: 0.65rem;"><?= date('d M Y', strtotime($log['date'])) ?></div>
-                                    </td>
-                                    <td>
-                                        <div class="fw-bold text-white"><?= htmlspecialchars($log['name']) ?></div>
-                                        <div class="text-muted tiny opacity-50"><?= htmlspecialchars($log['nik']) ?></div>
-                                    </td>
-                                    <td>
-                                        <?php if (!empty($log['time_out'])): ?>
-                                            <span class="badge-glass badge-rose">KELUAR (OUT)</span>
-                                        <?php else: ?>
-                                            <span class="badge-glass badge-emerald">MASUK (IN)</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td class="text-end pe-4">
-                                        <?php 
-                                        if (!empty($log['time_in'])) {
-                                            $hour = (int)date('H', strtotime($log['time_in']));
-                                            echo $hour <= 8 ? '<span class="badge-glass badge-emerald py-1 px-2" style="font-size: 0.6rem;">NORMAL</span>' : '<span class="badge-glass badge-rose py-1 px-2" style="font-size: 0.6rem;">TERLAMBAT</span>';
-                                        } else {
-                                            echo '<span class="text-muted small">ABSEN</span>';
-                                        }
-                                        ?>
-                                    </td>
-                                </tr>
+                                <?php foreach ($logs as $log): ?>
+                                    <tr class="log-row" data-name="<?= strtolower($log['name']) ?>"
+                                        data-nik="<?= $log['nik'] ?>" data-status="<?= $log['status'] ?>"
+                                        data-date="<?= $log['date'] ?>">
+                                        <td class="ps-4">
+                                            <div class="text-white small fw-bold">
+                                                <?= htmlspecialchars($log['time_in'] ?? '--:--') ?></div>
+                                            <div class="text-muted tiny" style="font-size: 0.65rem;">
+                                                <?= date('d M Y', strtotime($log['date'])) ?></div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="fw-bold text-white"><?= htmlspecialchars($log['name']) ?></div>
+                                            <div class="text-muted tiny opacity-50"><?= htmlspecialchars($log['nik']) ?>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center">
+                                                <?php if (!empty($log['time_out'])): ?>
+                                                    <span class="badge-glass badge-rose">KELUAR (OUT)</span>
+                                                <?php else: ?>
+                                                    <span class="badge-glass badge-emerald">MASUK (IN)</span>
+                                                <?php endif; ?>
+                                            </div>
+                                        </td>
+                                        <td class="text-center pe-4">
+                                            <div class="d-flex justify-content-center">
+                                                <?php
+                                                if ($log['status'] === 'Present') {
+                                                    echo '<span class="badge-glass badge-emerald py-1 px-2" style="font-size: 0.6rem;">HADIR</span>';
+                                                } elseif ($log['status'] === 'Late') {
+                                                    echo '<span class="badge-glass badge-rose py-1 px-2" style="font-size: 0.6rem;">TERLAMBAT</span>';
+                                                } else {
+                                                    echo '<span class="badge-glass badge-indigo py-1 px-2" style="font-size: 0.6rem;">' . ($log['status'] === 'Absent' ? 'ABSEN' : strtoupper($log['status'])) . '</span>';
+                                                }
+                                                ?>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
@@ -161,9 +175,9 @@ require_once 'includes/header.php';
             <div class="col-lg-4 animate-fadeIn stagger-2">
                 <div class="glass p-4 h-100">
                     <h3 class="text-white fs-5 fw-bold mb-4 d-flex align-items-center">
-                        <i class="fas fa-tower-broadcast text-primary me-2"></i> Live Feed Kiosk
+                        <i class="fas fa-tower-broadcast text-primary me-2"></i> Umpan Langsung Kios
                     </h3>
-                    
+
                     <div class="timeline">
                         <?php if (empty($kiosk_scans)): ?>
                             <div class="p-4 text-center glass-pane">
@@ -171,19 +185,23 @@ require_once 'includes/header.php';
                                 <p class="text-muted small">Menunggu aktivitas pindaian...</p>
                             </div>
                         <?php else: ?>
-                            <?php foreach($kiosk_scans as $scan): ?>
-                            <div class="glass-item p-3 mb-3 animate-fadeIn">
-                                <div class="d-flex justify-content-between">
-                                    <div class="fw-bold text-white small"><?= htmlspecialchars($scan['name'] ?? 'TIDAK DIKENAL') ?></div>
-                                    <div class="text-primary tiny font-monospace"><?= date('H:i:s', strtotime($scan['timestamp'])) ?></div>
+                            <?php foreach ($kiosk_scans as $scan): ?>
+                                <div class="glass-item p-3 mb-3 animate-fadeIn">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="fw-bold text-white small">
+                                            <?= htmlspecialchars($scan['name'] ?? 'TIDAK DIKENAL') ?></div>
+                                        <div class="text-primary tiny font-monospace">
+                                            <?= date('H:i:s', strtotime($scan['timestamp'])) ?></div>
+                                    </div>
+                                    <div class="text-muted tiny mb-2">ID: <?= htmlspecialchars($scan['nik']) ?></div>
+                                    <div>
+                                        <span
+                                            class="badge-glass <?= $scan['status'] == 'APPROVED' ? 'badge-emerald' : 'badge-rose' ?> py-0"
+                                            style="font-size: 0.55rem;">
+                                            <?= $scan['status'] == 'APPROVED' ? 'TERMINAL DISETUJUI' : 'AKSES DITOLAK' ?>
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="text-muted tiny mb-2">ID: <?= htmlspecialchars($scan['nik']) ?></div>
-                                <div>
-                                    <span class="badge-glass <?= $scan['status'] == 'APPROVED' ? 'badge-emerald' : 'badge-rose' ?> py-0" style="font-size: 0.55rem;">
-                                        <?= $scan['status'] == 'APPROVED' ? 'TERMINAL APPROVED' : 'ACCESS DENIED' ?>
-                                    </span>
-                                </div>
-                            </div>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </div>
@@ -198,103 +216,139 @@ require_once 'includes/header.php';
 <!-- Detail Modal -->
 <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-pane p-1" style="background: rgba(15, 23, 42, 0.98); border: 1px solid var(--primary-glow);">
+        <div class="modal-content glass-pane p-1"
+            style="background: rgba(15, 23, 42, 0.98); border: 1px solid var(--primary-glow);">
             <div class="modal-body p-5 text-center">
                 <div class="brand-font text-primary mb-4 fs-3">DETAIL IDENTITAS</div>
                 <div id="modal-content">
                     <i class="fas fa-circle-notch fa-spin fs-1 text-muted"></i>
                 </div>
-                <button type="button" class="btn-premium mt-5 w-100 justify-content-center" data-bs-dismiss="modal">TUTUP DATA</button>
+                <button type="button" class="btn-premium mt-5 w-100 justify-content-center"
+                    data-bs-dismiss="modal">TUTUP DATA</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-let attendanceChart;
-let lastDeniedCount = 0;
+    let attendanceChart;
+    let lastDeniedCount = 0;
 
-async function updateDashboard() {
-    try {
-        const response = await fetch('industrial/fetch_attendance.php');
-        const data = await response.json();
-        if (!data.success) return;
+    async function updateDashboard() {
+        try {
+            const response = await fetch('industrial/fetch_attendance.php');
+            const data = await response.json();
+            if (!data.success) return;
 
-        // Update Stats
-        document.getElementById('stat-hadir').innerText = data.stats.hadir;
-        document.getElementById('stat-terlambat').innerText = data.stats.terlambat;
-        document.getElementById('stat-absen').innerText = data.stats.absen;
-        
-        const deniedCount = parseInt(data.stats.ditolak);
-        document.getElementById('stat-ditolak').innerText = deniedCount;
+            // Update Stats
+            document.getElementById('stat-hadir').innerText = data.stats.hadir;
+            document.getElementById('stat-terlambat').innerText = data.stats.terlambat;
+            document.getElementById('stat-absen').innerText = data.stats.absen;
 
-        // Alarm Trigger
-        if (deniedCount > lastDeniedCount && lastDeniedCount !== 0) {
-            triggerAlert("❗ PENOLAKAN AKSES TERDETEKSI");
-        }
-        lastDeniedCount = deniedCount;
-    } catch (e) { console.error("Sync Error", e); }
-}
+            const deniedCount = parseInt(data.stats.ditolak);
+            document.getElementById('stat-ditolak').innerText = deniedCount;
 
-function triggerAlert(msg) {
-    const alert = document.createElement('div');
-    alert.className = 'glass-pane p-4 mb-2 animate-fadeIn pulse-cyan';
-    alert.style.position = 'fixed'; alert.style.top = '20px'; alert.style.right = '20px';
-    alert.style.borderColor = 'var(--accent)';
-    alert.style.zIndex = '9999';
-    alert.innerHTML = `<div class="fw-bold text-accent">${msg}</div><div class="text-white small">Verifikasi log terminal secepatnya.</div>`;
-    document.body.appendChild(alert);
-    setTimeout(() => alert.remove(), 5000);
-}
+            // Alarm Trigger
+            if (deniedCount > lastDeniedCount && lastDeniedCount !== 0) {
+                triggerAlert("❗ PENOLAKAN AKSES TERDETEKSI");
+            }
+            lastDeniedCount = deniedCount;
+        } catch (e) { console.error("Sync Error", e); }
+    }
 
-function filterLogs() {
-    const query = document.getElementById('logSearch').value.toLowerCase();
-    const status = document.getElementById('statusFilter').value;
-    const date = document.getElementById('dateFilter').value;
-    const rows = document.querySelectorAll('.log-row');
+    function triggerAlert(msg) {
+        const alert = document.createElement('div');
+        alert.className = 'glass-pane p-4 mb-2 animate-fadeIn pulse-cyan';
+        alert.style.position = 'fixed'; alert.style.top = '20px'; alert.style.right = '20px';
+        alert.style.borderColor = 'var(--accent)';
+        alert.style.zIndex = '9999';
+        alert.innerHTML = `<div class="fw-bold text-accent">${msg}</div><div class="text-white small">Segera verifikasi log terminal.</div>`;
+        document.body.appendChild(alert);
+        setTimeout(() => alert.remove(), 5000);
+    }
 
-    rows.forEach(row => {
-        const name = row.getAttribute('data-name');
-        const nik = row.getAttribute('data-nik');
-        const rStatus = row.getAttribute('data-status');
-        const rDate = row.getAttribute('data-date');
+    function filterLogs() {
+        const query = document.getElementById('logSearch').value.toLowerCase();
+        const status = document.getElementById('statusFilter').value;
+        const date = document.getElementById('dateFilter').value;
+        const rows = document.querySelectorAll('.log-row');
 
-        const matchQuery = name.includes(query) || nik.includes(query);
-        const matchStatus = !status || rStatus === status;
-        const matchDate = !date || rDate === date;
+        rows.forEach(row => {
+            const name = row.getAttribute('data-name');
+            const nik = row.getAttribute('data-nik');
+            const rStatus = row.getAttribute('data-status');
+            const rDate = row.getAttribute('data-date');
 
-        row.style.display = (matchQuery && matchStatus && matchDate) ? '' : 'none';
-    });
-}
+            const matchQuery = name.includes(query) || nik.includes(query);
+            const matchStatus = !status || rStatus === status;
+            const matchDate = !date || rDate === date;
 
-function exportToCSV() {
-    const rows = document.querySelectorAll('.log-row');
-    let csv = "Waktu,Nama,NIK,Status\n";
-    rows.forEach(row => {
-        if(row.style.display !== 'none') {
-            const time = row.cells[0].innerText.replace(/\n/g, ' ');
-            const name = row.cells[1].querySelector('.fw-bold').innerText;
-            const nik = row.cells[1].querySelector('.tiny').innerText;
-            const status = row.cells[3].innerText;
-            csv += `"${time}","${name}","${nik}","${status}"\n`;
-        }
-    });
+            row.style.display = (matchQuery && matchStatus && matchDate) ? '' : 'none';
+        });
+    }
 
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.setAttribute('href', url);
-    a.setAttribute('download', `REPORT_ATTENDANCE_${new Date().toISOString().slice(0,10)}.csv`);
-    a.click();
-}
+    function exportToCSV() {
+        const rows = document.querySelectorAll('.log-row');
+        let csv = "Waktu,Nama,NIK,Status\n";
+        rows.forEach(row => {
+            if (row.style.display !== 'none') {
+                const time = row.cells[0].innerText.replace(/\n/g, ' ');
+                const name = row.cells[1].querySelector('.fw-bold').innerText;
+                const nik = row.cells[1].querySelector('.tiny').innerText;
+                const status = row.cells[3].innerText;
+                csv += `"${time}","${name}","${nik}","${status}"\n`;
+            }
+        });
 
-// Start Update Cycle
-updateDashboard();
-setInterval(updateDashboard, 5000);
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.setAttribute('href', url);
+        a.setAttribute('download', `REPORT_ATTENDANCE_${new Date().toISOString().slice(0, 10)}.csv`);
+        a.click();
+    }
+
+    // Start Update Cycle
+    updateDashboard();
+    setInterval(updateDashboard, 5000);
 </script>
 <style>
-.status-dot-blink { width: 8px; height: 8px; border-radius: 50%; animation: blink 1.5s infinite; }
-@keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-.timeline-item { padding-left: 20px; border-left: 2px solid var(--border-glass); position: relative; padding-bottom: 20px; }
-.timeline-item::before { content: ''; position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: var(--primary); }
+    .status-dot-blink {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+        0% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.3;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .timeline-item {
+        padding-left: 20px;
+        border-left: 2px solid var(--border-glass);
+        position: relative;
+        padding-bottom: 20px;
+    }
+
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -7px;
+        top: 5px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--primary);
+    }
 </style>

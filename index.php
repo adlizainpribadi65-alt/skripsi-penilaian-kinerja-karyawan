@@ -66,18 +66,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             margin-bottom: 40px;
         }
 
-        .login-icon {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, var(--indigo) 0%, var(--purple) 100%);
-            border-radius: 20px;
+        .login-logo-container {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 24px;
-            font-size: 2rem;
-            color: white;
-            box-shadow: 0 0 30px var(--primary-glow);
+            background: white;
+            box-shadow: 0 0 40px var(--primary-glow), 0 10px 30px rgba(0,0,0,0.15);
+            overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .login-logo-container:hover {
+            transform: scale(1.05);
+        }
+
+        .login-logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .error-overlay {
@@ -103,8 +113,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <div class="glass login-glass-card">
         <div class="login-header">
-            <div class="login-icon">
-                <i class="fas fa-layer-group"></i>
+            <div class="login-logo-container">
+                <img src="assets/img/logo_ry.png" alt="Reegyoella Logo" class="login-logo-img">
             </div>
             <h1 class="text-white fw-bold display-6 brand-font">REEGIOELLA</h1>
             <p class="text-muted small text-uppercase tracking-widest" style="letter-spacing: 0.25em;">Integrated DSS

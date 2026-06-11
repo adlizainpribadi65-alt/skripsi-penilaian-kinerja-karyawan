@@ -1,38 +1,27 @@
 <aside class="sidebar">
-    <!-- Animated Particle Layer -->
-    <div class="sidebar-particles">
-        <div class="particle p1"></div>
-        <div class="particle p2"></div>
-        <div class="particle p3"></div>
-        <div class="particle p4"></div>
-        <div class="particle p5"></div>
-    </div>
-
-    <!-- Noise Texture Overlay -->
-    <div class="sidebar-noise"></div>
-
     <!-- Top Accent Line -->
     <div class="sidebar-top-accent"></div>
 
     <div class="brand-section">
-        <div class="brand-logo-ring">
-            <div class="brand-logo-inner">
-                <i class="fas fa-atom brand-icon-spin"></i>
-            </div>
+        <div
+            style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; background: white; margin: 0 auto 15px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+            <img src="<?= $base_url ?>assets/img/logo_ry.png" alt="RY"
+                style="width: 100%; height: 100%; object-fit: cover;">
         </div>
-        <div class="brand-font fs-3 fw-bold text-white mb-0 tracking-tight shimmer-neon">REEGIOELLA</div>
-        <div class="text-primary tiny fw-bold opacity-75 mt-1" style="letter-spacing: 0.5em; font-size: 0.61rem;">
-            ECOSYSTEM_HUB</div>
-        <div class="brand-status-pill">
-            <span class="status-dot-live"></span>
-            <span>SYSTEM ONLINE</span>
-        </div>
+        <div class="fs-4 fw-bold text-white mb-0" style="font-family: 'Inter', sans-serif; letter-spacing: 1px;">
+            REEGIOELLA</div>
+
+    <!-- Minimalist Status Dot (Top-Right) -->
+    <div class="brand-status-pill-mini">
+        <span class="status-dot-live"></span>
+    </div>
+
     </div>
 
     <nav class="sidebar-nav flex-grow-1 d-flex flex-column">
         <div class="sidebar-title">
             <span class="sidebar-title-icon"><i class="fas fa-compass"></i></span>
-            Main Hub
+            Hub Utama
         </div>
         <a href="dashboard.php"
             class="nav-item <?= basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'active' : '' ?>">
@@ -44,23 +33,24 @@
         </a>
 
         <div class="sidebar-title">
-            <span class="sidebar-title-icon"><i class="fas fa-link"></i></span>
-            Supply Chain
+            <span class="sidebar-title-icon"><i class="fas fa-boxes-stacked"></i></span>
+            Logistik & Inventori
         </div>
-        <a href="../inventori/dashboard.php" class="nav-item">
-            <div class="nav-icon-box icon-emerald">
-                <i class="fas fa-boxes-stacked"></i>
-            </div>
-            <span>Inventory Core</span>
-            <div class="nav-item-glow"></div>
-        </a>
-        <a href="../inventori/stok.php" class="nav-item">
-            <div class="nav-icon-box icon-amber">
+        <a href="../inventori/" class="nav-item">
+            <div class="nav-icon-box icon-amber"
+                style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2);">
                 <i class="fas fa-warehouse"></i>
             </div>
-            <span>Monitoring Stok</span>
+            <span>Sistem Inventori</span>
+            <span class="nav-ext-badge"><i class="fas fa-arrow-up-right-from-square"></i></span>
             <div class="nav-item-glow"></div>
         </a>
+
+
+        <div class="sidebar-title">
+            <span class="sidebar-title-icon"><i class="fas fa-star"></i></span>
+            Penilaian Kinerja
+        </div>
         <a href="production.php"
             class="nav-item <?= basename($_SERVER['PHP_SELF']) == 'production.php' ? 'active' : '' ?>">
             <div class="nav-icon-box icon-violet">
@@ -69,10 +59,17 @@
             <span>Log Penilaian</span>
             <div class="nav-item-glow"></div>
         </a>
+        <a href="scores.php" class="nav-item <?= basename($_SERVER['PHP_SELF']) == 'scores.php' ? 'active' : '' ?>">
+            <div class="nav-icon-box icon-cyan">
+                <i class="fas fa-database"></i>
+            </div>
+            <span>Manajemen Skor</span>
+            <div class="nav-item-glow"></div>
+        </a>
 
         <div class="sidebar-title">
             <span class="sidebar-title-icon"><i class="fas fa-fingerprint"></i></span>
-            Human Capital
+            Sumber Daya Manusia
         </div>
         <a href="employees.php"
             class="nav-item <?= basename($_SERVER['PHP_SELF']) == 'employees.php' ? 'active' : '' ?>">
@@ -116,7 +113,7 @@
 
         <div class="sidebar-title">
             <span class="sidebar-title-icon"><i class="fas fa-brain"></i></span>
-            Decision Engine
+            Mesin Keputusan
         </div>
         <a href="criteria.php" class="nav-item <?= basename($_SERVER['PHP_SELF']) == 'criteria.php' ? 'active' : '' ?>">
             <div class="nav-icon-box icon-indigo">
@@ -148,10 +145,10 @@
                 </div>
                 <div class="user-role-tag">
                     <span class="role-dot"></span>
-                    Root Authority
+                    Otoritas Penuh
                 </div>
             </div>
-            <button id="theme-toggle" class="logout-btn mx-1" title="Toggle Light/Dark Mode">
+            <button id="theme-toggle" class="logout-btn mx-1" title="Ganti Mode Terang/Gelap">
                 <i class="fas fa-moon shadow-glow-mini" id="theme-icon"></i>
             </button>
             <a href="logout.php" class="logout-btn" title="Logout">

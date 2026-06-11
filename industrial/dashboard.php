@@ -35,7 +35,7 @@ require_once __DIR__ . '/../includes/header.php';
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <div class="badge-glass badge-indigo mb-3 font-monospace tracking-widest">COMMAND_CENTER_V5.3</div>
-                    <h1 class="display-5 fw-bold text-white mb-2">Factory <span class="shimmer-text">Command Center</span></h1>
+                    <h1 class="display-5 fw-bold text-white mb-2">Dashboard Produksi Industri</h1>
                     <p class="text-muted fs-5">Monitoring real-time alur personel dan keberadaan produksi.</p>
                 </div>
                 <div class="glass p-3 px-4 d-flex align-items-center gap-4 shadow-glow-mini" style="border: 1px solid var(--primary-glow);">

@@ -32,4 +32,5 @@ function checkLogin() {
 
 // Global Help Functions
 require_once __DIR__ . '/functions.php';
+initializeWeeklyAttendance($pdo);
 ?>

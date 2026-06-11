@@ -6,23 +6,16 @@ checkLogin();
 // Sinkronisasi data ke mesin SAW
 syncAttendanceToSAW($pdo);
 syncProductionToSAW($pdo);
-syncInventoryToSAW($pdo);
 
 // 1. Statistik SAW & Personel
 $total_employees = $pdo->query("SELECT COUNT(*) FROM employees")->fetchColumn();
 $performance_avg = $pdo->query("SELECT AVG(score) FROM scores")->fetchColumn() ?? 0;
 
-// 2. Statistik Inventori (Aggregated from inventori_reggioella)
-$q_inv_masuk = $pdo->query("SELECT SUM(jumlah) FROM inventori_reggioella.barang_masuk")->fetchColumn() ?? 0;
-$q_inv_keluar = $pdo->query("SELECT SUM(jumlah) FROM inventori_reggioella.barang_keluar")->fetchColumn() ?? 0;
-$total_stok = $q_inv_masuk - $q_inv_keluar;
-$masuk_today = $pdo->query("SELECT SUM(jumlah) FROM inventori_reggioella.barang_masuk WHERE DATE(tanggal_masuk) = CURDATE()")->fetchColumn() ?? 0;
-
-// 3. Statistik Presensi
-$hadir_today = $pdo->query("SELECT COUNT(DISTINCT employee_id) FROM attendance WHERE date = CURDATE() AND status = 'Present'")->fetchColumn() ?? 0;
+// 2. Statistik Presensi
+$hadir_today = $pdo->query("SELECT COUNT(DISTINCT employee_id) FROM attendance WHERE date = CURDATE() AND status IN ('Present', 'Late')")->fetchColumn() ?? 0;
 $attendance_rate = ($total_employees > 0) ? ($hadir_today / $total_employees) * 100 : 0;
 
-// 4. Produksi
+// 3. Produksi
 $total_production = $pdo->query("SELECT SUM(quantity) FROM production_logs")->fetchColumn() ?? 0;
 
 require_once 'includes/header.php';
@@ -33,28 +26,25 @@ require_once 'includes/header.php';
     <main class="content-main">
         <div class="header-section mb-5 animate-fadeIn">
             <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="badge-glass badge-indigo mb-3 font-monospace tracking-widest"><i
-                            class="fas fa-tower-broadcast text-cyan me-2"></i> REEGIOELLA_ECOSYSTEM_NODE_V5.5</div>
-                    <h1 class="display-5 fw-bold text-white mb-2">Pusat Performa <span
-                            class="shimmer-text">Ecosystem</span></h1>
-                    <p class="text-muted fs-5">Analisis terintegrasi antara Logistik, Produksi, dan Kinerja Personel
-                        teragregasi.</p>
-                </div>
-                <div class="glass p-3 px-4 d-flex align-items-center gap-4 shadow-glow-mini"
-                    style="border: 1px solid var(--primary-glow);">
-                    <div class="text-center">
-                        <div class="tiny text-primary fw-bold tracking-widest uppercase mb-1">Live Sync</div>
-                        <div class="badge-glass badge-emerald"><i class="fas fa-link animate-pulse me-2"></i> ACTIVE
-                        </div>
+                <div class="d-flex align-items-center gap-4">
+                    <div class="dashboard-logo-ring">
+                        <img src="assets/img/logo_ry.png" alt="Reegyoella" class="dashboard-logo-img">
+                    </div>
+                    <div>
+
+                        <h1 class="display-5 fw-bold text-white mb-2">Halaman Kinerja</h1>
+                        <p class="text-muted fs-5">Analisis terintegrasi antara Kehadiran, Produksi, dan Kinerja
+                            Personel
+                            teragregasi.</p>
                     </div>
                 </div>
+
             </div>
         </div>
 
         <div class="bento-grid">
             <!-- Row 1: Key Metrics -->
-            <div class="span-3">
+            <div class="span-4">
                 <div class="glass bento-card h-100 stagger-1">
                     <div class="widget-title"><i class="fas fa-users-viewfinder"></i> Personel Aktif</div>
                     <div class="metric-value"><?= $total_employees ?></div>
@@ -65,7 +55,7 @@ require_once 'includes/header.php';
                 </div>
             </div>
 
-            <div class="span-3">
+            <div class="span-4">
                 <div class="glass bento-card h-100 stagger-2">
                     <div class="widget-title"><i class="fas fa-fingerprint"></i> Laju Presensi</div>
                     <div class="metric-value text-secondary"><?= number_format($attendance_rate, 1) ?>%</div>
@@ -76,21 +66,11 @@ require_once 'includes/header.php';
                 </div>
             </div>
 
-            <div class="span-3">
+            <div class="span-4">
                 <div class="glass bento-card h-100 stagger-3">
-                    <div class="widget-title"><i class="fas fa-warehouse-full"></i> Volume Logistik</div>
-                    <div class="metric-value text-cyan"><?= number_format($total_stok) ?></div>
-                    <div class="badge-glass badge-indigo mt-3 w-fit" style="font-size: 0.6rem;">
-                        <i class="fas fa-arrow-up me-1"></i> +<?= number_format($masuk_today) ?> Recieved Today
-                    </div>
-                </div>
-            </div>
-
-            <div class="span-3">
-                <div class="glass bento-card h-100 stagger-4">
                     <div class="widget-title"><i class="fas fa-gears"></i> Total Produksi</div>
                     <div class="metric-value text-accent"><?= number_format($total_production) ?></div>
-                    <div class="text-muted tiny mt-3 font-monospace uppercase opacity-50">Units_Aggregated</div>
+
                 </div>
             </div>
 
@@ -99,11 +79,8 @@ require_once 'includes/header.php';
                 <div class="glass bento-card animate-fadeIn stagger-2" style="min-height: 520px;">
                     <div class="d-flex justify-content-between align-items-center mb-5">
                         <div class="widget-title mb-0"><i class="fas fa-chart-line"></i> Indeks Performa Karyawan
-                            (Ecosystem Average)</div>
-                        <div class="d-flex gap-2">
-                            <span class="badge-glass badge-indigo">ANALYTICS_V4</span>
-                            <span class="badge-glass badge-emerald">OPTIMIZED</span>
-                        </div>
+                            (Rata-rata Ekosistem)</div>
+
                     </div>
                     <div style="height: 420px; padding-bottom: 20px;">
                         <canvas id="mainPerformanceChart"></canvas>
@@ -113,15 +90,10 @@ require_once 'includes/header.php';
 
             <div class="span-4">
                 <div class="glass bento-card h-100 animate-fadeIn stagger-3">
-                    <div class="widget-title mb-4"><i class="fas fa-bolt-lightning text-cyan"></i> Kontrol Pusat SAW
-                    </div>
+
                     <div class="d-grid gap-3 mb-5">
                         <a href="calculate.php" class="btn-premium justify-content-center py-3">
-                            <i class="fas fa-calculator"></i> Jalankan SAW Engine
-                        </a>
-                        <a href="../inventori/dashboard.php" class="btn-premium justify-content-center py-3"
-                            style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); box-shadow: none;">
-                            <i class="fas fa-boxes-packing"></i> Hub Logistik
+                            <i class="fas fa-calculator"></i> Jalankan Mesin SAW
                         </a>
                         <a href="production.php" class="btn-premium justify-content-center py-3"
                             style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); box-shadow: none;">
@@ -131,12 +103,12 @@ require_once 'includes/header.php';
 
                     <div class="glass-pane p-4 text-center mt-5"
                         style="border: 1px dashed var(--primary-glow); background: linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, transparent 100%);">
-                        <div class="text-primary fw-bold tiny tracking-widest mb-1 opacity-75">GLOBAL PERFORMANCE SCORE
+                        <div class="text-primary fw-bold tiny tracking-widest mb-1 opacity-75">SKOR PERFORMA GLOBAL
                         </div>
                         <div class="display-4 fw-bold text-white mb-1 brand-font">
                             <?= number_format($performance_avg, 2) ?>
                         </div>
-                        <div class="badge-glass badge-indigo py-1">Standardized Index</div>
+                        <div class="badge-glass badge-indigo py-1">Indeks Terstandarisasi</div>
                     </div>
                 </div>
             </div>
@@ -147,6 +119,27 @@ require_once 'includes/header.php';
 <style>
     .w-fit {
         width: fit-content;
+    }
+
+    .dashboard-logo-ring {
+        width: 90px;
+        height: 90px;
+        min-width: 90px;
+        border-radius: 50%;
+        background: white;
+        overflow: hidden;
+        box-shadow: 0 0 30px var(--primary-glow), 0 8px 25px rgba(0, 0, 0, 0.2);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .dashboard-logo-ring:hover {
+        transform: scale(1.08) rotate(3deg);
+    }
+
+    .dashboard-logo-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
     .shadow-glow-mini {
