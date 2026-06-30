@@ -4,18 +4,38 @@ require_once 'includes/functions.php';
 checkLogin();
 
 $type = $_GET['type'] ?? 'pdf';
-$filter_week = $_GET['filter_week'] ?? date('Y-\WW');
-if (strpos($filter_week, '-W') !== false) {
-    list($year, $week) = explode('-W', $filter_week);
-    $dto = new DateTime();
-    $dto->setISODate((int)$year, (int)$week);
-    $start_date = $dto->format('Y-m-d');
-    $dto->modify('+6 days');
-    $end_date = $dto->format('Y-m-d');
-} else {
 
-    $start_date = date('Y-m-d', strtotime('monday this week'));
-    $end_date = date('Y-m-d', strtotime('sunday this week'));
+$filter_type = $_GET['filter_type'] ?? 'weekly';
+$filter_date = $_GET['filter_date'] ?? date('Y-m-d');
+$filter_week = $_GET['filter_week'] ?? date('Y-\WW');
+$filter_month = $_GET['filter_month'] ?? date('Y-m');
+
+$start_date = '';
+$end_date = '';
+$display_period = '';
+
+if ($filter_type === 'daily') {
+    $start_date = $filter_date;
+    $end_date = $filter_date;
+    $display_period = "Harian ($filter_date)";
+} elseif ($filter_type === 'monthly') {
+    $start_date = $filter_month . '-01';
+    $end_date = date('Y-m-t', strtotime($start_date));
+    $display_period = "Bulanan ($filter_month)";
+} else {
+    $filter_type = 'weekly';
+    if (strpos($filter_week, '-W') !== false) {
+        list($year, $week) = explode('-W', $filter_week);
+        $dto = new DateTime();
+        $dto->setISODate((int)$year, (int)$week);
+        $start_date = $dto->format('Y-m-d');
+        $dto->modify('+6 days');
+        $end_date = $dto->format('Y-m-d');
+    } else {
+        $start_date = date('Y-m-d', strtotime('monday this week'));
+        $end_date = date('Y-m-d', strtotime('sunday this week'));
+    }
+    $display_period = "Mingguan ($filter_week)";
 }
 
 // Fetch Data (Logic copied from scores.php for consistency)
@@ -28,7 +48,7 @@ $stmt = $pdo->prepare("SELECT s.*, e.name as emp_name, c.name as crit_name
                                AND s.id IN (
                                   SELECT MAX(id) FROM scores GROUP BY employee_id, criteria_id, DATE(created_at)
                                )
-                               ORDER BY e.name ASC, c.id ASC");
+                               ORDER BY e.name ASC, c.id ASC, s.created_at ASC");
 $stmt->execute([$start_date, $end_date]);
 $all_scores_raw = $stmt->fetchAll();
 
@@ -111,7 +131,7 @@ if ($type == 'excel') {
     <div class="header">
         <h2>REKAPITULASI SKOR GABUNGAN (MATRIX KEPUTUSAN)</h2>
         <p>Sistem Pendukung Keputusan Penilaian Kinerja Karyawan - Metode SAW</p>
-        <p>Periode: <?= $filter_week ?> (<?= date('d/m/Y', strtotime($start_date)) ?> - <?= date('d/m/Y', strtotime($end_date)) ?>)</p>
+        <p>Periode: <?= htmlspecialchars($display_period) ?> (<?= date('d/m/Y', strtotime($start_date)) ?> - <?= date('d/m/Y', strtotime($end_date)) ?>)</p>
         <p>Tanggal Cetak: <?= date('d/m/Y H:i:s') ?></p>
     </div>
 

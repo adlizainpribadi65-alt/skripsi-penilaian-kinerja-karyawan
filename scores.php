@@ -24,19 +24,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save_score'])) {
     $message = "Analisis kinerja subjek berhasil disinkronkan ke pusat data.";
 }
 
-// Handle Filtering by Week
-$filter_week = $_GET['filter_week'] ?? date('Y-\WW'); // e.g. 2023-W10
-if (strpos($filter_week, '-W') !== false) {
-    list($year, $week) = explode('-W', $filter_week);
-    $dto = new DateTime();
-    $dto->setISODate((int)$year, (int)$week);
-    $start_date = $dto->format('Y-m-d');
-    $dto->modify('+6 days');
-    $end_date = $dto->format('Y-m-d');
-} else {
+// Handle Filtering Cycles
+$filter_type = $_GET['filter_type'] ?? 'weekly';
+$filter_date = $_GET['filter_date'] ?? date('Y-m-d');
+$filter_week = $_GET['filter_week'] ?? date('Y-\WW');
+$filter_month = $_GET['filter_month'] ?? date('Y-m');
 
-    $start_date = date('Y-m-d', strtotime('monday this week'));
-    $end_date = date('Y-m-d', strtotime('sunday this week'));
+$start_date = '';
+$end_date = '';
+$display_period = '';
+
+if ($filter_type === 'daily') {
+    $start_date = $filter_date;
+    $end_date = $filter_date;
+    $display_period = "Harian ($filter_date)";
+} elseif ($filter_type === 'monthly') {
+    $start_date = $filter_month . '-01';
+    $end_date = date('Y-m-t', strtotime($start_date));
+    $display_period = "Bulanan ($filter_month)";
+} else {
+    // default to weekly
+    $filter_type = 'weekly';
+    if (strpos($filter_week, '-W') !== false) {
+        list($year, $week) = explode('-W', $filter_week);
+        $dto = new DateTime();
+        $dto->setISODate((int)$year, (int)$week);
+        $start_date = $dto->format('Y-m-d');
+        $dto->modify('+6 days');
+        $end_date = $dto->format('Y-m-d');
+    } else {
+        $start_date = date('Y-m-d', strtotime('monday this week'));
+        $end_date = date('Y-m-d', strtotime('sunday this week'));
+    }
+    $display_period = "Mingguan ($filter_week)";
 }
 
 // Fetch Data for Metrics
@@ -57,7 +77,7 @@ $stmt = $pdo->prepare("SELECT s.*, e.name as emp_name, c.name as crit_name
                      AND s.id IN (
                         SELECT MAX(id) FROM scores GROUP BY employee_id, criteria_id, DATE(created_at)
                      )
-                     ORDER BY e.name ASC, c.id ASC");
+                     ORDER BY e.name ASC, c.id ASC, s.created_at ASC");
 $stmt->execute([$start_date, $end_date]);
 $all_scores_raw = $stmt->fetchAll();
 
@@ -230,17 +250,26 @@ require_once 'includes/header.php';
                             <h3 class="text-white fs-5 fw-bold m-0"><i class="fas fa-database text-primary me-2"></i>
                             Rekapitulasi Skor</h3>
                             <form method="GET" class="d-flex align-items-center gap-2">
-                                <label class="text-muted small fw-bold text-uppercase ms-2">Minggu Ke:</label>
-                                <input type="week" name="filter_week" value="<?= $filter_week ?>" 
-                                       class="form-control-glass py-1 px-2" style="font-size: 0.8rem; width: 200px;" 
-                                       onchange="this.form.submit()">
+                                <select name="filter_type" class="form-control-glass py-1 px-2" style="font-size: 0.8rem;" onchange="this.form.submit()">
+                                    <option value="daily" <?= $filter_type == 'daily' ? 'selected' : '' ?>>Harian</option>
+                                    <option value="weekly" <?= $filter_type == 'weekly' ? 'selected' : '' ?>>Mingguan</option>
+                                    <option value="monthly" <?= $filter_type == 'monthly' ? 'selected' : '' ?>>Bulanan</option>
+                                </select>
+                                
+                                <?php if ($filter_type == 'daily'): ?>
+                                    <input type="date" name="filter_date" value="<?= $filter_date ?>" class="form-control-glass py-1 px-2" style="font-size: 0.8rem;" onchange="this.form.submit()">
+                                <?php elseif ($filter_type == 'monthly'): ?>
+                                    <input type="month" name="filter_month" value="<?= $filter_month ?>" class="form-control-glass py-1 px-2" style="font-size: 0.8rem;" onchange="this.form.submit()">
+                                <?php else: ?>
+                                    <input type="week" name="filter_week" value="<?= $filter_week ?>" class="form-control-glass py-1 px-2" style="font-size: 0.8rem; width: 200px;" onchange="this.form.submit()">
+                                <?php endif; ?>
                             </form>
                         </div>
                         <div class="d-flex gap-2">
-                            <a href="export_rekap.php?type=pdf&filter_week=<?= $filter_week ?>" target="_blank" class="btn-premium py-1 px-3" style="font-size: 0.75rem;">
+                            <a href="export_rekap.php?type=pdf&filter_type=<?= $filter_type ?>&filter_date=<?= $filter_date ?>&filter_week=<?= $filter_week ?>&filter_month=<?= $filter_month ?>" target="_blank" class="btn-premium py-1 px-3" style="font-size: 0.75rem;">
                                 <i class="fas fa-file-pdf me-1"></i> PDF
                             </a>
-                            <a href="export_rekap.php?type=excel&filter_week=<?= $filter_week ?>" class="btn-premium py-1 px-3" style="font-size: 0.75rem; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); color: #10b981;">
+                            <a href="export_rekap.php?type=excel&filter_type=<?= $filter_type ?>&filter_date=<?= $filter_date ?>&filter_week=<?= $filter_week ?>&filter_month=<?= $filter_month ?>" class="btn-premium py-1 px-3" style="font-size: 0.75rem; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); color: #10b981;">
                                 <i class="fas fa-file-excel me-1"></i> EXCEL
                             </a>
 

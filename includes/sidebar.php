@@ -8,13 +8,13 @@
             <img src="<?= $base_url ?>assets/img/logo_ry.png" alt="RY"
                 style="width: 100%; height: 100%; object-fit: cover;">
         </div>
-        <div class="fs-4 fw-bold text-white mb-0" style="font-family: 'Inter', sans-serif; letter-spacing: 1px;">
+        <div class="fs-4 fw-bold mb-0" style="font-family: 'Inter', sans-serif; letter-spacing: 1px; color: #1e293b;">
             REEGIOELLA</div>
 
-    <!-- Minimalist Status Dot (Top-Right) -->
-    <div class="brand-status-pill-mini">
-        <span class="status-dot-live"></span>
-    </div>
+        <!-- Minimalist Status Dot (Top-Right) -->
+        <div class="brand-status-pill-mini">
+            <span class="status-dot-live"></span>
+        </div>
 
     </div>
 
@@ -122,6 +122,13 @@
             <span>Kriteria Penilaian</span>
             <div class="nav-item-glow"></div>
         </a>
+        <a href="ahp.php" class="nav-item <?= basename($_SERVER['PHP_SELF']) == 'ahp.php' ? 'active' : '' ?>">
+            <div class="nav-icon-box icon-emerald">
+                <i class="fas fa-balance-scale"></i>
+            </div>
+            <span>Matriks AHP</span>
+            <div class="nav-item-glow"></div>
+        </a>
         <a href="ranking.php" class="nav-item <?= basename($_SERVER['PHP_SELF']) == 'ranking.php' ? 'active' : '' ?>">
             <div class="nav-icon-box icon-gold">
                 <i class="fas fa-award"></i>
@@ -141,7 +148,7 @@
                 </div>
             </div>
             <div class="flex-grow-1 overflow-hidden">
-                <div class="fw-bold text-white small text-truncate"><?= $_SESSION['username'] ?? 'Administrator' ?>
+                <div class="fw-bold small text-truncate" style="color: #1e293b;"><?= $_SESSION['username'] ?? 'Administrator' ?>
                 </div>
                 <div class="user-role-tag">
                     <span class="role-dot"></span>

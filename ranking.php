@@ -79,7 +79,7 @@ require_once 'includes/header.php';
         <!-- Formal Print Header (Visible only when printing) -->
         <div class="print-header d-none text-center mb-5">
             <h1 class="text-uppercase fw-bold border-bottom pb-3">Laporan Hasil Penilaian Peringkat Akhir</h1>
-            <p class="mt-2 text-muted">Metode Simple Additive Weighting (SAW) | Tanggal: <?= date('d/m/Y H:i') ?></p>
+            <p class="mt-2 text-muted">Metode AHP dan Simple Additive Weighting (SAW) | Tanggal: <?= date('d/m/Y H:i') ?></p>
         </div>
 
         <div class="header-section mb-5 animate-fadeIn no-screen">
@@ -139,7 +139,7 @@ require_once 'includes/header.php';
 
                                     <div class="cert-body">
                                         <p class="cert-intro">Berdasarkan hasil analisis Sistem Pendukung Keputusan
-                                            (DSS) dengan metode Simple Additive Weighting (SAW) terhadap seluruh subyek
+                                            (DSS) Penilaian Kinerja Karyawan dengan metode AHP dan SAW terhadap seluruh subyek
                                             yang dinilai, dengan ini menetapkan bahwa:</p>
 
                                         <div class="cert-recipient">

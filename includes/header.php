@@ -8,19 +8,19 @@ $base_url = (basename(dirname($_SERVER['PHP_SELF'])) == 'inventori') ? '../dss-s
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reegioella Hub - Integrated DSS</title>
+    <title>Sistem Pendukung Keputusan Penilaian Kinerja Karyawan AHP & SAW</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Modern Design System -->
-    <link rel="stylesheet" href="<?= $base_url ?>assets/css/modern.css">
+    <link rel="stylesheet" href="<?= $base_url ?>assets/css/modern.css?v=<?= time() ?>">
     <!-- Sidebar Styles (edit file ini untuk ubah tampilan sidebar) -->
-    <link rel="stylesheet" href="<?= $base_url ?>assets/css/sidebar.css">
+    <link rel="stylesheet" href="<?= $base_url ?>assets/css/sidebar.css?v=<?= time() ?>">
 
     <!-- Theme Initializer - Prevents flash of unstyled theme -->
     <script>
-        (function() {
+        (function () {
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
         })();

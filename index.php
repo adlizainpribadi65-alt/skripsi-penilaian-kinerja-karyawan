@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reegioella Hub - Integrated DSS</title>
+    <title>Sistem Pendukung Keputusan Penilaian Kinerja Karyawan AHP & SAW</title>
     <!-- FontAwesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Modern Design System -->
@@ -117,8 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <img src="assets/img/logo_ry.png" alt="Reegyoella Logo" class="login-logo-img">
             </div>
             <h1 class="text-white fw-bold display-6 brand-font">REEGIOELLA</h1>
-            <p class="text-muted small text-uppercase tracking-widest" style="letter-spacing: 0.25em;">Integrated DSS
-                SAW Hub</p>
+            <p class="text-muted small fw-bold">Sistem Pendukung Keputusan Penilaian Kinerja Karyawan<br>Menggunakan Metode AHP dan SAW</p>
         </div>
 
         <?php if ($error): ?>

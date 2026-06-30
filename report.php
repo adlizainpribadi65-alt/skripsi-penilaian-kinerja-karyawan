@@ -284,7 +284,7 @@ function getIndoDate($date)
                                 LAPORAN ANALITIK KINERJA<br>
                                 SISTEM PENDUKUNG KEPUTUSAN KINERJA KARYAWAN<br>
                                 PT REEGIOELLA INDUSTRIAL HUB<br>
-                                METODE : SIMPLE ADDITIVE WEIGHTING (SAW)
+                                METODE : ANALYTICAL HIERARCHY PROCESS (AHP) & SIMPLE ADDITIVE WEIGHTING (SAW)
                             </div>
                         </td>
                         <td style="width: 15%;"></td>
@@ -347,7 +347,7 @@ function getIndoDate($date)
                 <div class="col-md-4">
                     <div class="meta-item" style="border-left-color: var(--secondary);">
                         <div class="text-muted tiny fw-bold uppercase tracking-widest mb-1">Model Algoritma</div>
-                        <div class="text-white fw-bold fs-5">SAW Matrix Synthesis</div>
+                        <div class="text-white fw-bold fs-5">AHP & SAW Synthesis</div>
                     </div>
                 </div>
                 <div class="col-md-4">

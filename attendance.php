@@ -33,51 +33,60 @@ require_once 'includes/header.php';
     <main class="content-main">
         <div class="header-section mb-5 d-flex justify-content-between align-items-end animate-fadeIn">
             <div>
-                <div class="brand-font text-primary tracking-widest small mb-1">MONITORING REAL-TIME</div>
-                <h1 class="display-5 fw-bold text-white">Log & Riwayat Presensi</h1>
-                <p class="text-muted fs-5">Pantau aktivitas kehadiran dan pindai identitas personel garmen secara
-                    instan.</p>
+                <div class="text-secondary fw-bold small mb-1 tracking-widest text-uppercase">MONITORING REAL-TIME</div>
+                <h1 class="display-5 fw-bold text-dark">Log & Riwayat Presensi</h1>
+                <p class="text-muted fs-5">Pantau aktivitas kehadiran dan pindai identitas personel secara instan.</p>
             </div>
-            <div class="glass-pane p-2 px-4 d-flex align-items-center mb-2">
-                <div class="status-dot-blink bg-secondary me-2"></div>
-                <span class="text-white small fw-bold">Sistem Monitoring Aktif</span>
+            <div class="card border-0 shadow-sm rounded-pill p-2 px-4 d-flex align-items-center mb-2">
+                <div class="status-dot-blink bg-success me-2" style="width:10px;height:10px;"></div>
+                <span class="text-dark small fw-bold">Sistem Monitoring Aktif</span>
             </div>
         </div>
 
         <div class="row g-4 mb-5" id="summary-cards">
             <div class="col-md-3">
-                <div class="glass bento-card h-100 stat-card" style="border-left: 4px solid var(--secondary);">
-                    <div class="widget-title"><i class="fas fa-users"></i> Hadir Hari Ini</div>
-                    <div class="d-flex align-items-end justify-content-between">
-                        <div class="metric-value text-white" id="stat-hadir">--</div>
-                        <div class="badge-glass badge-emerald">LIVE</div>
+                <div class="card shadow-sm border-0 h-100 p-4"
+                    style="border-radius: 12px; border-left: 5px solid #10b981 !important;">
+                    <div class="text-secondary fw-bold small mb-3 text-uppercase tracking-widest"
+                        style="letter-spacing:2px;"><i class="fas fa-users-viewfinder"></i> Hadir Hari Ini</div>
+                    <div class="d-flex align-items-end justify-content-between mt-auto">
+                        <div class="display-4 fw-bold text-dark" style="line-height: 1;" id="stat-hadir">0</div>
+                        <span
+                            class="badge rounded-pill bg-success text-success bg-opacity-10 py-2 px-3 fw-bold">LIVE</span>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="glass bento-card h-100 stat-card" style="border-left: 4px solid var(--accent);">
-                    <div class="widget-title"><i class="fas fa-clock"></i> Terlambat</div>
-                    <div class="d-flex align-items-end justify-content-between">
-                        <div class="metric-value text-accent" id="stat-terlambat">--</div>
-                        <i class="fas fa-exclamation-triangle text-accent opacity-25 fs-2"></i>
+                <div class="card shadow-sm border-0 h-100 p-4"
+                    style="border-radius: 12px; border-left: 5px solid #ef4444 !important;">
+                    <div class="text-secondary fw-bold small mb-3 text-uppercase tracking-widest"
+                        style="letter-spacing:2px;"><i class="fas fa-clock"></i> Terlambat</div>
+                    <div class="d-flex align-items-end justify-content-between mt-auto">
+                        <div class="display-4 fw-bold text-danger" style="line-height: 1;" id="stat-terlambat">0</div>
+                        <i class="fas fa-exclamation-triangle text-danger opacity-25 fs-2"></i>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="glass bento-card h-100 stat-card">
-                    <div class="widget-title"><i class="fas fa-user-slash"></i> Absen / Izin</div>
-                    <div class="d-flex align-items-end justify-content-between">
-                        <div class="metric-value text-muted" id="stat-absen">--</div>
-                        <i class="fas fa-plane-departure text-muted opacity-25 fs-2"></i>
+                <div class="card shadow-sm border-0 h-100 p-4"
+                    style="border-radius: 12px; border-left: 5px solid #e5e7eb !important;">
+                    <div class="text-secondary fw-bold small mb-3 text-uppercase tracking-widest"
+                        style="letter-spacing:2px;"><i class="fas fa-plane-slash"></i> Absen / Izin</div>
+                    <div class="d-flex align-items-end justify-content-between mt-auto">
+                        <div class="display-4 fw-bold text-secondary" style="line-height: 1;" id="stat-absen">0</div>
+                        <i class="fas fa-plane-departure text-secondary opacity-25 fs-2"></i>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="glass bento-card h-100 stat-card" style="border-left: 4px solid var(--primary);">
-                    <div class="widget-title"><i class="fas fa-shield-halved"></i> Penolakan Akses</div>
-                    <div class="d-flex align-items-end justify-content-between">
-                        <div class="metric-value text-primary" id="stat-ditolak">--</div>
-                        <div class="badge-glass badge-rose">ALARM</div>
+                <div class="card shadow-sm border-0 h-100 p-4"
+                    style="border-radius: 12px; border-left: 5px solid #3b82f6 !important;">
+                    <div class="text-secondary fw-bold small mb-3 text-uppercase tracking-widest"
+                        style="letter-spacing:2px;"><i class="fas fa-shield"></i> Penolakan Akses</div>
+                    <div class="d-flex align-items-end justify-content-between mt-auto">
+                        <div class="display-4 fw-bold text-primary" style="line-height: 1;" id="stat-ditolak">0</div>
+                        <span
+                            class="badge rounded-pill bg-danger text-danger bg-opacity-10 py-2 px-3 fw-bold">ALARM</span>
                     </div>
                 </div>
             </div>
@@ -86,23 +95,26 @@ require_once 'includes/header.php';
         <div class="row g-4">
             <!-- Tabel Riwayat -->
             <div class="col-lg-8 animate-fadeIn stagger-1">
-                <div class="glass p-0 overflow-hidden shadow-lg">
-                    <div class="p-4 border-bottom border-white border-opacity-10">
+                <div class="card shadow-sm border-0 rounded-4 overflow-hidden bg-white">
+                    <div class="p-4 border-bottom border-light border-2">
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h3 class="text-white fs-5 fw-bold m-0"><i class="fas fa-history text-primary me-2"></i>
+                            <h3 class="text-dark fs-5 fw-bold m-0"><i class="fas fa-history text-primary me-2"></i>
                                 Riwayat Kehadiran</h3>
-                            <button onclick="exportToCSV()" class="btn-premium py-2 px-3">
+                            <button onclick="exportToCSV()" class="btn btn-primary rounded-3 text-white fw-bold px-4">
                                 <i class="fas fa-file-excel"></i> CETAK EXCEL
                             </button>
                         </div>
                         <!-- Filter Bar -->
                         <div class="row g-2">
                             <div class="col-md-5">
-                                <input type="text" id="logSearch" class="form-control-glass w-100"
+                                <input type="text" id="logSearch"
+                                    class="form-control rounded-3 border-0 bg-light py-2 px-3 fw-medium text-dark"
                                     placeholder="Cari Nama atau NIK..." onkeyup="filterLogs()">
                             </div>
                             <div class="col-md-4">
-                                <select id="statusFilter" class="form-control-glass w-100" onchange="filterLogs()">
+                                <select id="statusFilter"
+                                    class="form-select rounded-3 border-0 bg-light py-2 px-3 fw-medium"
+                                    onchange="filterLogs()">
                                     <option value="">Semua Status</option>
                                     <option value="Present">Hadir (Present)</option>
                                     <option value="Late">Terlambat (Late)</option>
@@ -110,19 +122,20 @@ require_once 'includes/header.php';
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <input type="date" id="dateFilter" class="form-control-glass w-100"
+                                <input type="date" id="dateFilter"
+                                    class="form-control rounded-3 border-0 bg-light py-2 px-3 fw-medium"
                                     onchange="filterLogs()">
                             </div>
                         </div>
                     </div>
-                    <div class="premium-table-container">
-                        <table class="premium-table">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle table-borderless">
                             <thead>
-                                <tr>
-                                    <th class="ps-4">Waktu</th>
-                                    <th class="text-center">Identitas Personel</th>
-                                    <th class="text-center">Status Logging</th>
-                                    <th class="text-center pe-4">Klasifikasi</th>
+                                <tr class="text-secondary opacity-50 small tracking-widest text-uppercase">
+                                    <th class="ps-4 py-3 fw-bold">Waktu</th>
+                                    <th class="text-center py-3 fw-bold">Identitas Personel</th>
+                                    <th class="text-center py-3 fw-bold">Status Logging</th>
+                                    <th class="text-center pe-4 py-3 fw-bold">Klasifikasi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -131,22 +144,26 @@ require_once 'includes/header.php';
                                         data-nik="<?= $log['nik'] ?>" data-status="<?= $log['status'] ?>"
                                         data-date="<?= $log['date'] ?>">
                                         <td class="ps-4">
-                                            <div class="text-white small fw-bold">
-                                                <?= htmlspecialchars($log['time_in'] ?? '--:--') ?></div>
+                                            <div class="text-dark small fw-bold">
+                                                <?= htmlspecialchars($log['time_in'] ?? '--:--') ?>
+                                            </div>
                                             <div class="text-muted tiny" style="font-size: 0.65rem;">
-                                                <?= date('d M Y', strtotime($log['date'])) ?></div>
+                                                <?= date('d M Y', strtotime($log['date'])) ?>
+                                            </div>
                                         </td>
                                         <td class="text-center">
-                                            <div class="fw-bold text-white"><?= htmlspecialchars($log['name']) ?></div>
-                                            <div class="text-muted tiny opacity-50"><?= htmlspecialchars($log['nik']) ?>
+                                            <div class="fw-bold text-dark"><?= htmlspecialchars($log['name']) ?></div>
+                                            <div class="text-muted tiny opacity-75"><?= htmlspecialchars($log['nik']) ?>
                                             </div>
                                         </td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center">
                                                 <?php if (!empty($log['time_out'])): ?>
-                                                    <span class="badge-glass badge-rose">KELUAR (OUT)</span>
+                                                    <span class="badge rounded-pill bg-danger text-danger bg-opacity-10">KELUAR
+                                                        (OUT)</span>
                                                 <?php else: ?>
-                                                    <span class="badge-glass badge-emerald">MASUK (IN)</span>
+                                                    <span class="badge rounded-pill bg-success text-success bg-opacity-10">MASUK
+                                                        (IN)</span>
                                                 <?php endif; ?>
                                             </div>
                                         </td>
@@ -154,11 +171,11 @@ require_once 'includes/header.php';
                                             <div class="d-flex justify-content-center">
                                                 <?php
                                                 if ($log['status'] === 'Present') {
-                                                    echo '<span class="badge-glass badge-emerald py-1 px-2" style="font-size: 0.6rem;">HADIR</span>';
+                                                    echo '<span class="badge rounded-pill bg-success text-success bg-opacity-10 py-2 px-3 fw-bold" style="font-size: 0.65rem;">HADIR</span>';
                                                 } elseif ($log['status'] === 'Late') {
-                                                    echo '<span class="badge-glass badge-rose py-1 px-2" style="font-size: 0.6rem;">TERLAMBAT</span>';
+                                                    echo '<span class="badge rounded-pill bg-danger text-danger bg-opacity-10 py-2 px-3 fw-bold" style="font-size: 0.65rem;">TERLAMBAT</span>';
                                                 } else {
-                                                    echo '<span class="badge-glass badge-indigo py-1 px-2" style="font-size: 0.6rem;">' . ($log['status'] === 'Absent' ? 'ABSEN' : strtoupper($log['status'])) . '</span>';
+                                                    echo '<span class="badge rounded-pill bg-secondary text-secondary bg-opacity-10 py-2 px-3 fw-bold" style="font-size: 0.65rem;">' . ($log['status'] === 'Absent' ? 'ABSEN' : strtoupper($log['status'])) . '</span>';
                                                 }
                                                 ?>
                                             </div>
@@ -173,30 +190,32 @@ require_once 'includes/header.php';
 
             <!-- Live Feed Section -->
             <div class="col-lg-4 animate-fadeIn stagger-2">
-                <div class="glass p-4 h-100">
-                    <h3 class="text-white fs-5 fw-bold mb-4 d-flex align-items-center">
+                <div class="card shadow-sm border-0 rounded-4 p-4 h-100 bg-white">
+                    <h3 class="text-dark fs-5 fw-bold mb-4 d-flex align-items-center">
                         <i class="fas fa-tower-broadcast text-primary me-2"></i> Umpan Langsung Kios
                     </h3>
 
                     <div class="timeline">
                         <?php if (empty($kiosk_scans)): ?>
-                            <div class="p-4 text-center glass-pane">
+                            <div class="p-4 text-center rounded-3 bg-light">
                                 <i class="fas fa-radar fa-spin text-muted fs-1 mb-3"></i>
                                 <p class="text-muted small">Menunggu aktivitas pindaian...</p>
                             </div>
                         <?php else: ?>
                             <?php foreach ($kiosk_scans as $scan): ?>
-                                <div class="glass-item p-3 mb-3 animate-fadeIn">
+                                <div class="p-3 mb-3 animate-fadeIn" style="border-bottom: 1px solid #f1f5f9;">
                                     <div class="d-flex justify-content-between">
-                                        <div class="fw-bold text-white small">
-                                            <?= htmlspecialchars($scan['name'] ?? 'TIDAK DIKENAL') ?></div>
-                                        <div class="text-primary tiny font-monospace">
-                                            <?= date('H:i:s', strtotime($scan['timestamp'])) ?></div>
+                                        <div class="fw-bold text-dark small">
+                                            <?= htmlspecialchars($scan['name'] ?? 'TIDAK DIKENAL') ?>
+                                        </div>
+                                        <div class="text-primary tiny font-monospace fw-bold">
+                                            <?= date('H:i:s', strtotime($scan['timestamp'])) ?>
+                                        </div>
                                     </div>
                                     <div class="text-muted tiny mb-2">ID: <?= htmlspecialchars($scan['nik']) ?></div>
                                     <div>
                                         <span
-                                            class="badge-glass <?= $scan['status'] == 'APPROVED' ? 'badge-emerald' : 'badge-rose' ?> py-0"
+                                            class="badge rounded-pill fw-bold <?= $scan['status'] == 'APPROVED' ? 'bg-success text-success bg-opacity-10' : 'bg-danger text-danger bg-opacity-10' ?> py-1 px-2"
                                             style="font-size: 0.55rem;">
                                             <?= $scan['status'] == 'APPROVED' ? 'TERMINAL DISETUJUI' : 'AKSES DITOLAK' ?>
                                         </span>
