@@ -24,14 +24,14 @@ require_once 'includes/header.php';
     <?php require_once 'includes/sidebar.php'; ?>
 
     <main class="content-main">
-        <div class="header-section mb-5 d-flex justify-content-between align-items-end animate-fadeIn">
-            <div class="d-flex align-items-center gap-4">
+        <div class="header-section mb-3 d-flex justify-content-between align-items-end animate-fadeIn">
+            <div class="d-flex align-items-center gap-3">
                 <div class="dashboard-logo-ring" style="border: 1px solid #e2e8f0; box-shadow: none;">
                     <img src="assets/img/logo_ry.png" alt="Reegyoella" class="dashboard-logo-img">
                 </div>
                 <div>
-                    <h1 class="display-5 fw-bold text-dark mb-2">Halaman Kinerja</h1>
-                    <p class="text-muted fs-5">Analisis terintegrasi antara Kehadiran, Produksi, dan Kinerja Personel
+                    <h1 class="display-6 fw-bold text-dark mb-1">Halaman Kinerja</h1>
+                    <p class="text-muted fs-6 mb-0">Analisis terintegrasi antara Kehadiran, Produksi, dan Kinerja Personel
                         teragregasi.</p>
                 </div>
             </div>
@@ -40,11 +40,11 @@ require_once 'includes/header.php';
         <div class="bento-grid">
             <!-- Row 1: Key Metrics -->
             <div class="span-4">
-                <div class="card shadow-sm border-0 h-100 p-4 stagger-1"
+                <div class="card shadow-sm border-0 h-100 p-3 stagger-1"
                     style="border-radius: 12px; border-left: 5px solid #10b981 !important;">
-                    <div class="text-secondary fw-bold small mb-3 text-uppercase tracking-widest"><i
+                    <div class="text-secondary fw-bold small mb-2 text-uppercase tracking-widest"><i
                             class="fas fa-users-viewfinder"></i> Personel Aktif</div>
-                    <div class="display-4 fw-bold text-dark mb-4" style="line-height: 1;"><?= $total_employees ?></div>
+                    <div class="display-5 fw-bold text-dark mb-2" style="line-height: 1;"><?= $total_employees ?></div>
                     <div class="d-flex align-items-center gap-2 mt-auto">
                         <div class="status-dot-blink bg-success" style="width: 8px; height: 8px;"></div>
                         <div class="text-secondary small fw-bold tracking-tighter"><?= $hadir_today ?> HADIR HARI INI
@@ -54,11 +54,11 @@ require_once 'includes/header.php';
             </div>
 
             <div class="span-4">
-                <div class="card shadow-sm border-0 h-100 p-4 stagger-2"
+                <div class="card shadow-sm border-0 h-100 p-3 stagger-2"
                     style="border-radius: 12px; border-left: 5px solid #3b82f6 !important;">
-                    <div class="text-secondary fw-bold small mb-3 text-uppercase tracking-widest"><i
+                    <div class="text-secondary fw-bold small mb-2 text-uppercase tracking-widest"><i
                             class="fas fa-fingerprint"></i> Laju Presensi</div>
-                    <div class="display-4 fw-bold text-primary mb-4" style="line-height: 1;">
+                    <div class="display-5 fw-bold text-primary mb-2" style="line-height: 1;">
                         <?= number_format($attendance_rate, 1) ?>%</div>
                     <div class="progress mt-auto bg-light" style="height: 6px; border-radius: 10px;">
                         <div class="progress-bar bg-primary rounded-pill"
@@ -68,11 +68,11 @@ require_once 'includes/header.php';
             </div>
 
             <div class="span-4">
-                <div class="card shadow-sm border-0 h-100 p-4 stagger-3"
+                <div class="card shadow-sm border-0 h-100 p-3 stagger-3"
                     style="border-radius: 12px; border-left: 5px solid #8b5cf6 !important;">
-                    <div class="text-secondary fw-bold small mb-3 text-uppercase tracking-widest"><i
+                    <div class="text-secondary fw-bold small mb-2 text-uppercase tracking-widest"><i
                             class="fas fa-gears"></i> Total Produksi</div>
-                    <div class="display-4 fw-bold" style="line-height: 1; color: #8b5cf6;">
+                    <div class="display-5 fw-bold" style="line-height: 1; color: #8b5cf6;">
                         <?= number_format($total_production) ?></div>
                 </div>
             </div>
@@ -80,37 +80,37 @@ require_once 'includes/header.php';
             <!-- Row 2: Analytics & High-End Controls -->
             <div class="span-8">
                 <div class="card shadow-sm border-0 rounded-4 overflow-hidden bg-white animate-fadeIn stagger-2"
-                    style="min-height: 520px;">
+                    style="min-height: 280px;">
                     <div
-                        class="d-flex justify-content-between align-items-center mb-4 p-4 border-bottom border-light border-2">
-                        <div class="text-dark fw-bold m-0 fs-5"><i class="fas fa-chart-line text-primary me-2"></i>
+                        class="d-flex justify-content-between align-items-center mb-2 p-3 border-bottom border-light border-2">
+                        <div class="text-dark fw-bold m-0 fs-6"><i class="fas fa-chart-line text-primary me-2"></i>
                             Indeks Performa Karyawan (Rata-rata Ekosistem)</div>
                     </div>
-                    <div style="height: 420px; padding: 20px;">
+                    <div style="height: 230px; padding: 10px 20px;">
                         <canvas id="mainPerformanceChart"></canvas>
                     </div>
                 </div>
             </div>
 
             <div class="span-4">
-                <div class="h-100 animate-fadeIn stagger-3 d-flex flex-column gap-3">
+                <div class="h-100 animate-fadeIn stagger-3 d-flex flex-column gap-2">
                     <a href="calculate.php"
-                        class="btn btn-primary d-flex justify-content-center align-items-center py-4 rounded-4 shadow-sm fw-bold">
+                        class="btn btn-primary d-flex justify-content-center align-items-center py-3 rounded-4 shadow-sm fw-bold">
                         <i class="fas fa-calculator me-2"></i> Jalankan Mesin SAW
                     </a>
                     <a href="production.php"
-                        class="btn btn-light d-flex justify-content-center align-items-center py-4 rounded-4 shadow-sm fw-bold border-0 text-dark">
+                        class="btn btn-light d-flex justify-content-center align-items-center py-3 rounded-4 shadow-sm fw-bold border-0 text-dark">
                         <i class="fas fa-industry me-2"></i> Operasi Produksi
                     </a>
 
                     <div
-                        class="card border-0 shadow-sm rounded-4 p-4 text-center mt-3 d-flex justify-content-center flex-grow-1 bg-white">
-                        <div class="text-primary fw-bold tiny tracking-widest mb-2 opacity-75">SKOR PERFORMA GLOBAL
+                        class="card border-0 shadow-sm rounded-4 p-3 text-center mt-2 d-flex justify-content-center flex-grow-1 bg-white">
+                        <div class="text-primary fw-bold tiny tracking-widest mb-1 opacity-75">SKOR PERFORMA GLOBAL
                         </div>
-                        <div class="display-3 fw-bold text-dark mb-2 brand-font">
+                        <div class="display-4 fw-bold text-dark mb-1 brand-font">
                             <?= number_format($performance_avg, 2) ?>
                         </div>
-                        <div class="badge rounded-pill bg-primary bg-opacity-10 text-primary mx-auto py-2 px-3 fw-bold">
+                        <div class="badge rounded-pill bg-primary bg-opacity-10 text-primary mx-auto py-1 px-3 fw-bold align-self-center mt-auto" style="font-size: 0.75rem;">
                             Indeks Terstandarisasi</div>
                     </div>
                 </div>
@@ -125,9 +125,9 @@ require_once 'includes/header.php';
     }
 
     .dashboard-logo-ring {
-        width: 90px;
-        height: 90px;
-        min-width: 90px;
+        width: 60px;
+        height: 60px;
+        min-width: 60px;
         border-radius: 50%;
         background: white;
         overflow: hidden;

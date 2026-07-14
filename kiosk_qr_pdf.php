@@ -48,27 +48,36 @@ $kiosk_url = $protocol . "://" . $host . "/dss-saw/industrial/kiosk.php";
             color: #333;
             margin: 0;
             padding: 0;
+            height: 100vh;
+            overflow: hidden; /* Prevent scrolling */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .print-container {
-            width: 210mm;
-            min-height: 297mm;
-            padding: 20mm;
-            margin: 20px auto;
+            width: 100%;
+            max-width: 210mm;
+            height: 95vh;
+            padding: 30px;
             background: #fff;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             position: relative;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
         }
 
         .header-section {
             text-align: center;
             border-bottom: 2px solid #2c3e50;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            flex-shrink: 0;
         }
 
         .header-section h1 {
-            font-size: 24pt;
+            font-size: 22pt;
             font-weight: 800;
             color: #2c3e50;
             margin-bottom: 5px;
@@ -85,45 +94,61 @@ $kiosk_url = $protocol . "://" . $host . "/dss-saw/industrial/kiosk.php";
 
         .qr-section {
             text-align: center;
-            margin: 50px 0;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .qr-box {
             display: inline-block;
-            padding: 20px;
+            padding: 15px;
             border: 4px solid #2c3e50;
             border-radius: 15px;
             background: #fff;
         }
 
         .qr-instruction {
-            margin-top: 30px;
-            font-size: 16pt;
+            margin-top: 15px;
+            font-size: 14pt;
             font-weight: 600;
             color: #2c3e50;
         }
 
         .qr-url {
-            margin-top: 15px;
+            margin-top: 10px;
             font-family: monospace;
-            font-size: 12pt;
+            font-size: 10pt;
             color: #34495e;
             background: #ecf0f1;
-            padding: 10px 20px;
+            padding: 8px 15px;
             border-radius: 8px;
             display: inline-block;
         }
 
+        .instructions-text {
+            text-align: center;
+            margin-top: 15px;
+            flex-shrink: 0;
+        }
+
+        .instructions-text p {
+            font-size: 10pt;
+            color: #555;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
         .footer-section {
-            position: absolute;
-            bottom: 20mm;
-            left: 20mm;
-            right: 20mm;
+            margin-top: auto;
             text-align: center;
             border-top: 1px solid #bdc3c7;
             padding-top: 15px;
             font-size: 10pt;
             color: #7f8c8d;
+            flex-shrink: 0;
         }
 
         .print-controls {
@@ -160,12 +185,14 @@ $kiosk_url = $protocol . "://" . $host . "/dss-saw/industrial/kiosk.php";
         @media print {
             body {
                 background: none;
+                height: auto;
+                display: block;
             }
             .print-container {
                 margin: 0;
                 box-shadow: none;
                 width: 100%;
-                height: 100vh;
+                height: 100%;
                 padding: 10mm;
                 page-break-inside: avoid;
             }
@@ -208,8 +235,8 @@ $kiosk_url = $protocol . "://" . $host . "/dss-saw/industrial/kiosk.php";
             </div>
         </div>
 
-        <div style="text-align: center; margin-top: 40px;">
-            <p style="font-size: 11pt; color: #555; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+        <div class="instructions-text">
+            <p>
                 Harap tempatkan kode QR ini di area yang mudah diakses oleh operator kiosk. Pastikan perangkat terhubung ke jaringan internal sebelum melakukan pemindaian.
             </p>
         </div>
@@ -226,8 +253,8 @@ $kiosk_url = $protocol . "://" . $host . "/dss-saw/industrial/kiosk.php";
             const qrcodeContainer = document.getElementById("qrcode");
             new QRCode(qrcodeContainer, {
                 text: "<?= $kiosk_url ?>",
-                width: 400,
-                height: 400,
+                width: 320,
+                height: 320,
                 colorDark: "#000000",
                 colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.H

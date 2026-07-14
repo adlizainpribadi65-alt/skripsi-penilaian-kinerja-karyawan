@@ -15,7 +15,7 @@ foreach ($employees_raw as $e) {
     foreach ($criteria as $c) {
         $stmt = $pdo->prepare("SELECT score FROM scores WHERE employee_id = ? AND criteria_id = ?");
         $stmt->execute([$e['id'], $c['id']]);
-        $matrix[$e['id']][$c['id']] = (float)$stmt->fetchColumn();
+        $matrix[$e['id']][$c['id']] = (float) $stmt->fetchColumn();
     }
 }
 
@@ -63,7 +63,7 @@ if (!empty($matrix) && !empty($criteria)) {
 }
 
 // 3. Sort Rankings by Score Descending
-usort($rankings, function($a, $b) {
+usort($rankings, function ($a, $b) {
     return $b['score'] <=> $a['score'];
 });
 
@@ -79,7 +79,8 @@ require_once 'includes/header.php';
         <!-- Formal Print Header (Visible only when printing) -->
         <div class="print-header d-none text-center mb-5">
             <h1 class="text-uppercase fw-bold border-bottom pb-3">Laporan Hasil Penilaian Peringkat Akhir</h1>
-            <p class="mt-2 text-muted">Metode AHP dan Simple Additive Weighting (SAW) | Tanggal: <?= date('d/m/Y H:i') ?></p>
+            <p class="mt-2 text-muted">Metode AHP dan Simple Additive Weighting (SAW) | Tanggal:
+                <?= date('d/m/Y H:i') ?></p>
         </div>
 
         <div class="header-section mb-5 animate-fadeIn no-screen">
@@ -120,7 +121,8 @@ require_once 'includes/header.php';
                             <h4 class="text-white fw-bold mb-1 fs-5">
                                 <?= htmlspecialchars($rankings[1]['name'] ?? 'PENDING...') ?>
                             </h4>
-                            <div class="text-primary fw-bold font-monospace fs-5"><?= number_format($rankings[1]['score'] ?? 0, 4) ?></div>
+                            <div class="text-primary fw-bold font-monospace fs-5">
+                                <?= number_format($rankings[1]['score'] ?? 0, 4) ?></div>
                         </div>
 
                         <!-- Rank 1 (The Winner / Certificate Focus) -->
@@ -139,7 +141,8 @@ require_once 'includes/header.php';
 
                                     <div class="cert-body">
                                         <p class="cert-intro">Berdasarkan hasil analisis Sistem Pendukung Keputusan
-                                            (DSS) Penilaian Kinerja Karyawan dengan metode AHP dan SAW terhadap seluruh subyek
+                                            (DSS) Penilaian Kinerja Karyawan dengan metode AHP dan SAW terhadap seluruh
+                                            subyek
                                             yang dinilai, dengan ini menetapkan bahwa:</p>
 
                                         <div class="cert-recipient">
@@ -154,7 +157,8 @@ require_once 'includes/header.php';
 
                                         <div class="cert-details">
                                             <p>Dengan total indeks preferensi (V) sebesar: <span
-                                                    class="cert-score"><?= number_format($rankings[0]['score'] ?? 0, 4) ?></span></p>
+                                                    class="cert-score"><?= number_format($rankings[0]['score'] ?? 0, 4) ?></span>
+                                            </p>
                                         </div>
 
                                         <p class="cert-closing">Demikian penetapan ini dibuat secara objektif
@@ -183,7 +187,8 @@ require_once 'includes/header.php';
                             <h2 class="winner-name text-white fw-bold mb-1 display-6 no-print">
                                 <?= htmlspecialchars($rankings[0]['name'] ?? 'PENDING...') ?>
                             </h2>
-                            <div class="winner-score text-primary display-4 fw-bold font-monospace no-print"><?= number_format($rankings[0]['score'] ?? 0, 4) ?>
+                            <div class="winner-score text-primary display-4 fw-bold font-monospace no-print">
+                                <?= number_format($rankings[0]['score'] ?? 0, 4) ?>
                             </div>
                             <div class="mt-4 no-print">
                                 <button onclick="printCert()" class="btn-premium px-5 py-3 shadow-lg"
@@ -204,7 +209,8 @@ require_once 'includes/header.php';
                             <h4 class="text-white fw-bold mb-1 fs-5">
                                 <?= htmlspecialchars($rankings[2]['name'] ?? 'PENDING...') ?>
                             </h4>
-                            <div class="text-primary fw-bold font-monospace fs-5"><?= number_format($rankings[2]['score'] ?? 0, 4) ?></div>
+                            <div class="text-primary fw-bold font-monospace fs-5">
+                                <?= number_format($rankings[2]['score'] ?? 0, 4) ?></div>
                         </div>
 
                     </div>

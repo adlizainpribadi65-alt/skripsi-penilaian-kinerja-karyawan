@@ -4,11 +4,11 @@
 
     <div class="brand-section">
         <div
-            style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; background: white; margin: 0 auto 15px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+            style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; background: white; margin: 0 auto 8px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
             <img src="<?= $base_url ?>assets/img/logo_ry.png" alt="RY"
                 style="width: 100%; height: 100%; object-fit: cover;">
         </div>
-        <div class="fs-4 fw-bold mb-0" style="font-family: 'Inter', sans-serif; letter-spacing: 1px; color: #1e293b;">
+        <div class="fs-5 fw-bold mb-0" style="font-family: 'Inter', sans-serif; letter-spacing: 1px; color: #1e293b;">
             REEGIOELLA</div>
 
         <!-- Minimalist Status Dot (Top-Right) -->
@@ -108,6 +108,14 @@
             </div>
             <span>Cetak PDF QR</span>
             <span class="nav-ext-badge"><i class="fas fa-arrow-up-right-from-square"></i></span>
+            <div class="nav-item-glow"></div>
+        </a>
+        <a href="sop_termination.php"
+            class="nav-item <?= basename($_SERVER['PHP_SELF']) == 'sop_termination.php' ? 'active' : '' ?>">
+            <div class="nav-icon-box icon-rose" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2);">
+                <i class="fas fa-file-shield"></i>
+            </div>
+            <span>SOP Pemberhentian</span>
             <div class="nav-item-glow"></div>
         </a>
 

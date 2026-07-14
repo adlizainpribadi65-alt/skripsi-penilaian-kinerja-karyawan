@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save_penilaian'])) {
         $pdo->beginTransaction();
         $stmt = $pdo->prepare("INSERT INTO scores (employee_id, criteria_id, score) VALUES (?, ?, ?) 
                                ON DUPLICATE KEY UPDATE score = VALUES(score)");
-        
+
         foreach ($scores_kualitas as $emp_id => $val) {
             if (is_numeric($val) && $crit_kualitas) {
                 $stmt->execute([$emp_id, $crit_kualitas, $val]);
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save_penilaian'])) {
                 $stmt->execute([$emp_id, $crit_kerjasama, $scores_kerjasama[$emp_id]]);
             }
         }
-        
+
         $pdo->commit();
         $message = "Log penilaian berhasil diperbarui secara massal.";
     } catch (Exception $e) {
@@ -57,16 +57,15 @@ if ($crit_kualitas && $crit_disiplin && $crit_kerjasama) {
 
 require_once 'includes/header.php';
 ?>
-<div class="app-container">
+<div class="app-container" style="height: 100vh; overflow: hidden;">
     <?php require_once 'includes/sidebar.php'; ?>
 
-    <main class="content-main">
-        <div class="header-section mb-5 animate-fadeIn">
+    <main class="content-main d-flex flex-column" style="height: 100vh; overflow: hidden; padding-bottom: 0;">
+        <div class="header-section mb-1 flex-shrink-0 animate-fadeIn">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-
-                    <h1 class="display-5 fw-bold text-white mb-2">Log <span class="shimmer-text">Penilaian</span></h1>
-                    <p class="text-muted fs-5">Inisialisasi input massal untuk Kualitas Kerja, Disiplin, dan Kerjasama.</p>
+                    <h1 class="display-6 fw-bold text-white mb-2">Log <span class="shimmer-text">Penilaian</span></h1>
+                    <p class="text-muted small mb-0">Inisialisasi input massal untuk Kualitas Kerja, Disiplin, dan Kerjasama.</p>
                 </div>
                 <div>
                     <!-- Section widget removed for a cleaner look -->
@@ -74,47 +73,51 @@ require_once 'includes/header.php';
             </div>
         </div>
 
-        <?php if($message): ?>
-        <div class="glass p-4 mb-5 border-start border-4 border-emerald animate-fadeIn">
-            <div class="d-flex align-items-center gap-3">
-                <i class="fas fa-check-circle text-emerald fs-4"></i>
-                <div class="text-white fw-medium"><?= $message ?></div>
+        <?php if ($message): ?>
+            <div class="glass p-2 mb-2 border-start border-4 border-emerald animate-fadeIn flex-shrink-0">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="fas fa-check-circle text-emerald fs-4"></i>
+                    <div class="text-white fw-medium small"><?= $message ?></div>
+                </div>
             </div>
-        </div>
         <?php endif; ?>
 
         <?php if (!$crit_kualitas || !$crit_disiplin || !$crit_kerjasama): ?>
-        <div class="glass p-4 mb-5 border-start border-4 border-amber animate-fadeIn">
-            <div class="d-flex align-items-center gap-3">
-                <i class="fas fa-exclamation-triangle text-amber fs-4"></i>
-                <div class="text-white fw-medium">Peringatan: Kriteria (Kualitas Kerja, Disiplin, atau Kerjasama) tidak ditemukan di database. Pastikan nama kriteria sesuai.</div>
+            <div class="glass p-2 mb-2 border-start border-4 border-amber animate-fadeIn flex-shrink-0">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="fas fa-exclamation-triangle text-amber fs-4"></i>
+                    <div class="text-white fw-medium small">Peringatan: Kriteria tidak lengkap di database. Pastikan nama kriteria sesuai.</div>
+                </div>
             </div>
-        </div>
         <?php endif; ?>
 
-        <form method="POST">
-            <div class="bento-grid">
-                <!-- Submit Card -->
-                <div class="col-span-12">
-                    <div class="glass bento-card d-flex flex-row justify-content-between align-items-center p-4 shadow-glow-hover" style="border: 2px dashed rgba(99, 102, 241, 0.1);">
+        <form method="POST" class="d-flex flex-column flex-grow-1 w-100 mb-2" style="min-height: 0;">
+            <!-- Submit Card -->
+            <div class="w-100 flex-shrink-0 mb-3">
+                <div class="glass d-flex flex-row justify-content-between align-items-center p-3 shadow-glow-hover"
+                    style="border: 2px dashed rgba(99, 102, 241, 0.1); border-radius: 12px;">
                         <div>
-                            <h3 class="text-white fw-bold mb-1 fs-5"><i class="fas fa-cloud-arrow-up text-primary me-2"></i> Finalisasi Data Penilaian</h3>
-                            <p class="text-muted small mb-0">Pastikan seluruh input telah diverifikasi sebelum disimpan ke sistem.</p>
+                            <h3 class="text-white fw-bold mb-1 fs-6"><i
+                                    class="fas fa-cloud-arrow-up text-primary me-2"></i> Finalisasi Data Penilaian</h3>
+                            <p class="text-muted small mb-0">Pastikan seluruh input telah diverifikasi sebelum disimpan
+                                ke sistem.</p>
                         </div>
-                        <button type="submit" name="save_penilaian" class="btn-premium px-5 py-3">
+                        <button type="submit" name="save_penilaian" class="btn-premium px-4 py-2" style="font-size: 0.85rem;">
                             <i class="fas fa-save me-2"></i> SIMPAN PENILAIAN MASSAL
                         </button>
                     </div>
                 </div>
 
                 <!-- Table Card -->
-                <div class="col-span-12 animate-fadeIn stagger-1">
-                    <div class="glass p-0 overflow-hidden shadow-lg">
-                        <div class="p-4 border-bottom border-white border-opacity-10 d-flex justify-content-between align-items-center">
-                            <h3 class="text-white fs-5 fw-bold m-0"><i class="fas fa-users-viewfinder text-primary me-2"></i> Daftar Personel Berdinas</h3>
-                            <span class="badge-glass badge-indigo"><?= count($employees) ?> Entri Aktif</span>
+                <div class="w-100 animate-fadeIn stagger-1 flex-grow-1 d-flex flex-column" style="min-height: 0;">
+                    <div class="glass p-0 overflow-hidden shadow-lg h-100 d-flex flex-column w-100" style="min-height: 0;">
+                        <div
+                            class="p-3 border-bottom border-white border-opacity-10 d-flex justify-content-between align-items-center flex-shrink-0 bg-white bg-opacity-5">
+                            <h3 class="text-white fs-6 fw-bold m-0"><i
+                                    class="fas fa-users-viewfinder text-primary me-2"></i> Daftar Personel Berdinas</h3>
+                            <span class="badge-glass badge-indigo" style="font-size: 0.7rem;"><?= count($employees) ?> Entri Aktif</span>
                         </div>
-                        <div class="premium-table-container">
+                        <div class="premium-table-container flex-grow-1 overflow-auto">
                             <table class="premium-table">
                                 <thead>
                                     <tr>
@@ -126,66 +129,81 @@ require_once 'includes/header.php';
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($employees as $row): 
+                                    <?php foreach ($employees as $row):
                                         $emp_id = $row['id'];
                                         $val_kualitas = $existing_scores[$emp_id][$crit_kualitas] ?? 0;
                                         $val_disiplin = $existing_scores[$emp_id][$crit_disiplin] ?? 0;
                                         $val_kerjasama = $existing_scores[$emp_id][$crit_kerjasama] ?? 0;
                                         $val_absensi = $existing_scores[$emp_id][$crit_absensi] ?? 0;
-                                    ?>
-                                    <tr>
-                                        <td class="ps-4">
-                                            <div class="text-white fw-bold fs-6"><?= htmlspecialchars($row['name']) ?></div>
-                                            <div class="badge-glass badge-indigo mt-1" style="font-size: 0.65rem;">
-                                                <i class="fas fa-id-badge me-1 text-primary"></i><?= htmlspecialchars($row['nik']) ?>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex justify-content-center">
-                                                <input type="number" step="0.01" name="score_kualitas[<?= $emp_id ?>]" 
-                                                       class="form-control-glass text-center fs-6" 
-                                                       style="width: 100px; border-radius: 8px; padding: 8px;" 
-                                                       value="<?= (float)$val_kualitas ?>" min="0" max="100">
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex justify-content-center">
-                                                <input type="number" step="0.01" name="score_disiplin[<?= $emp_id ?>]" 
-                                                       class="form-control-glass text-center fs-6" 
-                                                       style="width: 100px; border-radius: 8px; padding: 8px;" 
-                                                       value="<?= (float)$val_disiplin ?>" min="0" max="100">
-                                            </div>
-                                        </td>
-                                        <td class="pe-4">
-                                            <div class="d-flex justify-content-center">
-                                                <input type="number" step="0.01" name="score_kerjasama[<?= $emp_id ?>]" 
-                                                       class="form-control-glass text-center fs-6" 
-                                                       style="width: 100px; border-radius: 8px; padding: 8px;" 
-                                                       value="<?= (float)$val_kerjasama ?>" min="0" max="100">
-                                            </div>
-                                        </td>
-                                        <td class="pe-4">
-                                            <div class="d-flex flex-column align-items-center">
-                                                <div class="fw-bold text-primary fs-5"><?= (float)$val_absensi ?></div>
-                                                <div class="badge-glass badge-emerald mt-1" style="font-size: 0.5rem;"><i class="fas fa-sync fa-spin"></i> OTOMATIS</div>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                        ?>
+                                        <tr>
+                                            <td class="ps-4">
+                                                <div class="text-white fw-bold fs-6"><?= htmlspecialchars($row['name']) ?>
+                                                </div>
+                                                <div class="badge-glass badge-indigo mt-1" style="font-size: 0.65rem;">
+                                                    <i
+                                                        class="fas fa-id-badge me-1 text-primary"></i><?= htmlspecialchars($row['nik']) ?>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex justify-content-center">
+                                                    <input type="number" step="0.01" name="score_kualitas[<?= $emp_id ?>]"
+                                                        class="form-control-glass text-center fs-6"
+                                                        style="width: 100px; border-radius: 8px; padding: 8px;"
+                                                        value="<?= (float) $val_kualitas ?>" min="0" max="100">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex justify-content-center">
+                                                    <input type="number" step="0.01" name="score_disiplin[<?= $emp_id ?>]"
+                                                        class="form-control-glass text-center fs-6"
+                                                        style="width: 100px; border-radius: 8px; padding: 8px;"
+                                                        value="<?= (float) $val_disiplin ?>" min="0" max="100">
+                                                </div>
+                                            </td>
+                                            <td class="pe-4">
+                                                <div class="d-flex justify-content-center">
+                                                    <input type="number" step="0.01" name="score_kerjasama[<?= $emp_id ?>]"
+                                                        class="form-control-glass text-center fs-6"
+                                                        style="width: 100px; border-radius: 8px; padding: 8px;"
+                                                        value="<?= (float) $val_kerjasama ?>" min="0" max="100">
+                                                </div>
+                                            </td>
+                                            <td class="pe-4">
+                                                <div class="d-flex flex-column align-items-center">
+                                                    <div class="fw-bold text-primary fs-5"><?= (float) $val_absensi ?></div>
+                                                    <div class="badge-glass badge-emerald mt-1" style="font-size: 0.5rem;">
+                                                        <i class="fas fa-sync fa-spin"></i> OTOMATIS
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-            </div>
         </form>
     </main>
 </div>
 
 <style>
-    .col-span-12 { grid-column: span 12; }
-    .shadow-glow-mini { box-shadow: 0 0 15px var(--primary-glow); }
-    .shadow-glow-hover:hover { box-shadow: 0 0 30px var(--primary-glow); border-color: var(--primary) !important; }
+    body, html {
+        overflow: hidden;
+    }
+    .col-span-12 {
+        grid-column: span 12;
+    }
+
+    .shadow-glow-mini {
+        box-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    .shadow-glow-hover:hover {
+        box-shadow: 0 0 30px var(--primary-glow);
+        border-color: var(--primary) !important;
+    }
 </style>
 
 <?php require_once 'includes/footer.php'; ?>

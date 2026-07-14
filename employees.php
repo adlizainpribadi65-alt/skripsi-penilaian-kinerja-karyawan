@@ -97,10 +97,10 @@ $divisions = $pdo->query("SELECT COUNT(DISTINCT position) FROM employees")->fetc
 
 require_once 'includes/header.php';
 ?>
-<div class="app-container">
+<div class="app-container" style="height: 100vh; overflow: hidden;">
     <?php require_once 'includes/sidebar.php'; ?>
 
-    <main class="content-main">
+    <main class="content-main d-flex flex-column" style="height: 100vh; overflow: hidden;">
         <?php if (isset($_SESSION['success_msg'])): ?>
             <div class="alert alert-success alert-dismissible fade show glass ms-0 mb-4" role="alert"
                 style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); color: #10b981;">
@@ -119,13 +119,13 @@ require_once 'includes/header.php';
             </div>
         <?php endif; ?>
 
-        <div class="header-section mb-5 animate-fadeIn">
+        <div class="header-section mb-2 flex-shrink-0 animate-fadeIn">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
 
                     <h1 class="display-5 fw-bold text-white mb-2">Direktori <span class="shimmer-text">Personel</span>
                     </h1>
-                    <p class="text-muted fs-5">Manajemen basis data karyawan, otorisasi ID, dan identitas sistem
+                    <p class="text-muted fs-5 mb-0">Manajemen basis data karyawan, otorisasi ID, dan identitas sistem
                         terpadu.</p>
                 </div>
                 <div class="d-flex gap-3">
@@ -136,7 +136,7 @@ require_once 'includes/header.php';
             </div>
         </div>
 
-        <div class="bento-grid">
+        <div class="bento-grid mb-2 flex-shrink-0">
             <!-- Stats Row -->
             <div class="span-4">
                 <div class="glass bento-card stagger-1">
@@ -159,117 +159,122 @@ require_once 'includes/header.php';
                     <div class="text-muted tiny mt-3 uppercase tracking-tighter">Sistem Identitas Online</div>
                 </div>
             </div>
+        </div>
 
-            <!-- Full List -->
-            <div class="span-12">
-                <div class="glass p-0 overflow-hidden shadow-2xl animate-fadeIn stagger-2">
-                    <div
-                        class="p-4 border-bottom border-white border-opacity-10 d-flex justify-content-between align-items-center bg-white bg-opacity-5">
-                        <h3 class="text-white fs-5 fw-bold m-0"><i class="fas fa-users-gear text-primary me-2"></i>
-                            Database Personel Terverifikasi</h3>
-                        <div class="d-flex gap-3">
-                            <div class="glass p-1 px-3 d-flex align-items-center gap-2"
-                                style="border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-                                <i class="fas fa-magnifying-glass small text-muted"></i>
-                                <input type="text" class="bg-transparent border-0 text-white small outline-none"
-                                    placeholder="Cari personel..." style="width: 150px;">
-                            </div>
-                            <span class="badge-glass badge-indigo"><?= $total_employees ?> DATA</span>
+        <!-- Full List -->
+        <div class="span-12 d-flex flex-column" style="flex: 1 1 auto; min-height: 0;">
+            <div class="glass p-0 overflow-hidden shadow-2xl animate-fadeIn stagger-2 d-flex flex-column h-100 w-100">
+                <div
+                    class="p-4 border-bottom border-white border-opacity-10 d-flex justify-content-between align-items-center bg-white bg-opacity-5 flex-shrink-0">
+                    <h3 class="text-white fs-5 fw-bold m-0"><i class="fas fa-users-gear text-primary me-2"></i>
+                        Database Personel Terverifikasi</h3>
+                    <div class="d-flex gap-3">
+                        <div class="glass p-1 px-3 d-flex align-items-center gap-2"
+                            style="border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                            <i class="fas fa-magnifying-glass small text-muted"></i>
+                            <input type="text" class="bg-transparent border-0 text-white small outline-none"
+                                placeholder="Cari personel..." style="width: 150px;">
                         </div>
+                        <span class="badge-glass badge-indigo"><?= $total_employees ?> DATA</span>
                     </div>
-                    <div class="premium-table-container">
-                        <table class="premium-table">
-                            <thead>
+                </div>
+                <div class="premium-table-container flex-grow-1 overflow-auto">
+                    <table class="premium-table">
+                        <thead>
+                            <tr>
+                                <th class="ps-5">Hash ID / NIK</th>
+                                <th>Nama Lengkap</th>
+                                <th>Posisi / Divisi</th>
+                                <th class="text-center">Keaktifan</th>
+                                <th class="text-end pe-5">Manajemen Sesi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($employees)): ?>
                                 <tr>
-                                    <th class="ps-5">Hash ID / NIK</th>
-                                    <th>Nama Lengkap</th>
-                                    <th>Posisi / Divisi</th>
-                                    <th class="text-center">Keaktifan</th>
-                                    <th class="text-end pe-5">Manajemen Sesi</th>
+                                    <td colspan="5" class="text-center py-5 text-muted italic">
+                                        <i class="fas fa-folder-open d-block fs-1 mb-3 opacity-25"></i>
+                                        Belum ada data karyawan terdaftar.
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (empty($employees)): ?>
+                            <?php else: ?>
+                                <?php foreach ($employees as $emp): ?>
                                     <tr>
-                                        <td colspan="5" class="text-center py-5 text-muted italic">
-                                            <i class="fas fa-folder-open d-block fs-1 mb-3 opacity-25"></i>
-                                            Belum ada data karyawan terdaftar.
+                                        <td class="ps-5">
+                                            <div class="badge-glass badge-indigo py-2 font-monospace"
+                                                style="font-size: 0.7rem;">
+                                                <i
+                                                    class="fas fa-fingerprint me-2 text-primary"></i><?= htmlspecialchars($emp['nik']) ?>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="bg-primary rounded-circle"
+                                                    style="width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; background: rgba(99,102,241,0.15) !important; border: 1px solid var(--primary-glow);">
+                                                    <?= strtoupper(substr($emp['name'], 0, 1)) ?>
+                                                </div>
+                                                <div class="fw-bold text-white fs-5"><?= htmlspecialchars($emp['name']) ?>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="text-muted small fw-bold text-uppercase tracking-tighter opacity-75">
+                                                <?= htmlspecialchars($emp['position']) ?>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge-glass badge-emerald">
+                                                <i class="fas fa-circle-check me-1"></i> AKTIF
+                                            </span>
+                                        </td>
+                                        <td class="text-end pe-5">
+                                            <div class="d-flex justify-content-end gap-2">
+                                                <a href="industrial/enroll_face.php?id=<?= $emp['id'] ?>"
+                                                    class="btn-premium px-3 py-2"
+                                                    style="background: rgba(34, 211, 238, 0.05); box-shadow: none; border: 1px solid rgba(34, 211, 238, 0.2); color: var(--cyan);"
+                                                    title="Daftar Wajah">
+                                                    <i class="fas fa-face-viewfinder"></i>
+                                                </a>
+                                                <button class="btn-premium px-3 py-2" data-bs-toggle="modal"
+                                                    data-bs-target="#editEmployeeModal" data-bs-id="<?= $emp['id'] ?>"
+                                                    data-bs-nik="<?= htmlspecialchars($emp['nik']) ?>"
+                                                    data-bs-name="<?= htmlspecialchars($emp['name']) ?>"
+                                                    data-bs-position="<?= htmlspecialchars($emp['position']) ?>"
+                                                    data-bs-department="<?= htmlspecialchars($emp['department']) ?>"
+                                                    style="background: rgba(255,255,255,0.03); box-shadow: none; border: 1px solid var(--border-glass);"
+                                                    title="Edit Personel">
+                                                    <i class="fas fa-pen-to-square text-primary"></i>
+                                                </button>
+                                                <form method="POST" class="m-0"
+                                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus personel ini? Semua data terkait (termasuk nilai) akan ikut terhapus.');">
+                                                    <input type="hidden" name="delete_id" value="<?= $emp['id'] ?>">
+                                                    <button type="submit" name="action" value="delete"
+                                                        class="btn-premium px-3 py-2"
+                                                        style="background: rgba(239, 68, 68, 0.05); box-shadow: none; border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444;"
+                                                        title="Hapus Personel">
+                                                        <i class="fas fa-trash-can"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
-                                <?php else: ?>
-                                    <?php foreach ($employees as $emp): ?>
-                                        <tr>
-                                            <td class="ps-5">
-                                                <div class="badge-glass badge-indigo py-2 font-monospace"
-                                                    style="font-size: 0.7rem;">
-                                                    <i
-                                                        class="fas fa-fingerprint me-2 text-primary"></i><?= htmlspecialchars($emp['nik']) ?>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex align-items-center gap-3">
-                                                    <div class="bg-primary rounded-circle"
-                                                        style="width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; background: rgba(99,102,241,0.15) !important; border: 1px solid var(--primary-glow);">
-                                                        <?= strtoupper(substr($emp['name'], 0, 1)) ?>
-                                                    </div>
-                                                    <div class="fw-bold text-white fs-5"><?= htmlspecialchars($emp['name']) ?>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div
-                                                    class="text-muted small fw-bold text-uppercase tracking-tighter opacity-75">
-                                                    <?= htmlspecialchars($emp['position']) ?>
-                                                </div>
-                                            </td>
-                                            <td class="text-center">
-                                                <span class="badge-glass badge-emerald">
-                                                    <i class="fas fa-circle-check me-1"></i> AKTIF
-                                                </span>
-                                            </td>
-                                            <td class="text-end pe-5">
-                                                <div class="d-flex justify-content-end gap-2">
-                                                    <a href="industrial/enroll_face.php?id=<?= $emp['id'] ?>"
-                                                        class="btn-premium px-3 py-2"
-                                                        style="background: rgba(34, 211, 238, 0.05); box-shadow: none; border: 1px solid rgba(34, 211, 238, 0.2); color: var(--cyan);"
-                                                        title="Daftar Wajah">
-                                                        <i class="fas fa-face-viewfinder"></i>
-                                                    </a>
-                                                    <button class="btn-premium px-3 py-2" data-bs-toggle="modal"
-                                                        data-bs-target="#editEmployeeModal" data-bs-id="<?= $emp['id'] ?>"
-                                                        data-bs-nik="<?= htmlspecialchars($emp['nik']) ?>"
-                                                        data-bs-name="<?= htmlspecialchars($emp['name']) ?>"
-                                                        data-bs-position="<?= htmlspecialchars($emp['position']) ?>"
-                                                        data-bs-department="<?= htmlspecialchars($emp['department']) ?>"
-                                                        style="background: rgba(255,255,255,0.03); box-shadow: none; border: 1px solid var(--border-glass);"
-                                                        title="Edit Personel">
-                                                        <i class="fas fa-pen-to-square text-primary"></i>
-                                                    </button>
-                                                    <form method="POST" class="m-0"
-                                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus personel ini? Semua data terkait (termasuk nilai) akan ikut terhapus.');">
-                                                        <input type="hidden" name="delete_id" value="<?= $emp['id'] ?>">
-                                                        <button type="submit" name="action" value="delete"
-                                                            class="btn-premium px-3 py-2"
-                                                            style="background: rgba(239, 68, 68, 0.05); box-shadow: none; border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444;"
-                                                            title="Hapus Personel">
-                                                            <i class="fas fa-trash-can"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </main>
+</div>
+</main>
 </div>
 
 <style>
+    body,
+    html {
+        overflow: hidden;
+    }
+
     .span-4 {
         grid-column: span 4;
     }
@@ -280,6 +285,79 @@ require_once 'includes/header.php';
 
     .shadow-glow-mini {
         box-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    /* Reduce margin and padding of content main */
+    .content-main {
+        padding: 8px 30px 8px !important;
+    }
+
+    /* Make title smaller & reduce margins */
+    .header-section {
+        margin-bottom: 0.25rem !important;
+    }
+
+    .header-section h1 {
+        font-size: 1.5rem !important;
+        margin-bottom: 0.15rem !important;
+    }
+
+    .header-section p {
+        font-size: 0.8rem !important;
+        margin-bottom: 0 !important;
+    }
+
+    .header-section .btn-premium {
+        padding: 6px 12px !important;
+        font-size: 0.8rem !important;
+    }
+
+    /* Shrink Bento Grid stats row */
+    .bento-grid {
+        gap: 12px !important;
+        margin-bottom: 0.4rem !important;
+    }
+
+    .bento-card {
+        padding: 8px 12px !important;
+        min-height: 70px !important;
+        justify-content: center !important;
+    }
+
+    .bento-card .widget-title {
+        font-size: 0.52rem !important;
+        margin: 0 0 2px 0 !important;
+        letter-spacing: 0.12em !important;
+    }
+
+    .bento-card .metric-value {
+        font-size: 1.35rem !important;
+        margin-bottom: 0 !important;
+    }
+
+    .bento-card .text-muted.tiny {
+        font-size: 0.55rem !important;
+        margin-top: 1px !important;
+    }
+
+    /* Shrink table padding */
+    .premium-table thead th {
+        padding: 6px 12px !important;
+        font-size: 0.65rem !important;
+    }
+
+    .premium-table td {
+        padding: 6px 12px !important;
+        font-size: 0.82rem !important;
+    }
+
+    .premium-table td div.fs-5 {
+        font-size: 0.92rem !important;
+    }
+
+    .badge-glass {
+        padding: 3px 8px !important;
+        font-size: 0.58rem !important;
     }
 </style>
 
@@ -303,8 +381,8 @@ require_once 'includes/header.php';
                     <div class="mb-4">
                         <label class="form-label text-muted small fw-bold text-uppercase tracking-widest">Hash ID /
                             NIK</label>
-                        <input type="text" name="nik" class="form-control-glass w-100" placeholder="Contoh: ID-2024001 (Otomatis ditambahkan)"
-                            required>
+                        <input type="text" name="nik" class="form-control-glass w-100"
+                            placeholder="Contoh: ID-2024001 (Otomatis ditambahkan)" required>
                     </div>
                     <div class="mb-4">
                         <label class="form-label text-muted small fw-bold text-uppercase tracking-widest">Nama

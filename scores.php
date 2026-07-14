@@ -48,7 +48,7 @@ if ($filter_type === 'daily') {
     if (strpos($filter_week, '-W') !== false) {
         list($year, $week) = explode('-W', $filter_week);
         $dto = new DateTime();
-        $dto->setISODate((int)$year, (int)$week);
+        $dto->setISODate((int) $year, (int) $week);
         $start_date = $dto->format('Y-m-d');
         $dto->modify('+6 days');
         $end_date = $dto->format('Y-m-d');
@@ -115,11 +115,11 @@ if (!empty($consolidated_scores) && !empty($criteria_list)) {
         foreach ($criteria_list as $c) {
             $score = $data['scores'][$c['id']] ?? 0;
             $weight = $c['weight'] / 100; // Assuming weights sum to 100
-            
+
             if (isset($crit_stats[$c['id']])) {
                 $max = $crit_stats[$c['id']]['max'];
                 $min = $crit_stats[$c['id']]['min'];
-                
+
                 if ($c['type'] == 'benefit' && $max > 0) {
                     $r = $score / $max;
                 } elseif ($c['type'] == 'cost' && $score > 0) {
@@ -137,186 +137,181 @@ if (!empty($consolidated_scores) && !empty($criteria_list)) {
 
 require_once 'includes/header.php';
 ?>
-<div class="app-container">
+<div class="app-container" style="height: 100vh; overflow: hidden;">
     <?php require_once 'includes/sidebar.php'; ?>
 
-    <main class="content-main">
-        <div class="header-section mb-5 animate-fadeIn">
+    <main class="content-main d-flex flex-column" style="height: 100vh; overflow: hidden;">
+        <!-- Header compact -->
+        <div class="header-section mb-2 flex-shrink-0 animate-fadeIn">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-
-                    <h1 class="display-5 fw-bold text-white mb-2">Manajemen <span class="shimmer-text">Kinerja</span>
-                    </h1>
-                    <p class="text-muted fs-5">Parameterisasi analitik dan konsolidasi skor untuk setiap subjek
-                        personel.</p>
-                    <div
-                        class="glass-pane d-inline-flex align-items-center p-2 px-3 mt-2 border-start border-3 border-primary">
-                        <i class="fas fa-info-circle text-primary me-2"></i>
-                        <span class="text-white small fw-bold">Skor Absensi diperbarui otomatis setiap scan Kiosk
-                            (Siklus Mingguan)</span>
-                    </div>
+                    <h1 class="display-6 fw-bold text-white mb-1">Manajemen <span class="shimmer-text">Kinerja</span></h1>
+                    <p class="text-muted small mb-0">Parameterisasi analitik dan konsolidasi skor untuk setiap subjek personel.</p>
                 </div>
-                <div class="glass p-3 px-4 d-flex align-items-center gap-4 shadow-glow-mini"
+                <div class="glass p-2 px-3 d-flex align-items-center gap-3 shadow-glow-mini"
                     style="border: 1px solid var(--primary-glow);">
                     <div class="text-center">
-                        <div class="tiny text-primary fw-bold tracking-widest uppercase mb-1">Kesehatan Sistem</div>
-                        <div class="fw-bold text-white fs-5"><i class="fas fa-shield-check text-emerald me-2"></i>
-                            TERVERIFIKASI</div>
+                        <div class="tiny text-primary fw-bold tracking-widest uppercase mb-0" style="font-size:0.55rem">Kesehatan Sistem</div>
+                        <div class="fw-bold text-white small"><i class="fas fa-shield-check text-emerald me-1"></i> TERVERIFIKASI</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <?php if ($message): ?>
-            <div
-                class="glass d-flex align-items-center p-4 mb-5 border-start border-4 border-emerald animate-fadeIn shadow-glow-mini">
-                <i class="fas fa-circle-check text-emerald me-3 fs-3"></i>
-                <div class="fw-medium text-white"><?= $message ?></div>
+            <div class="glass d-flex align-items-center p-2 px-3 mb-2 border-start border-4 border-emerald animate-fadeIn flex-shrink-0">
+                <i class="fas fa-circle-check text-emerald me-2 fs-5"></i>
+                <div class="fw-medium text-white small"><?= $message ?></div>
             </div>
         <?php endif; ?>
 
-        <div class="bento-grid">
-            <!-- Summary Metrics -->
-            <div class="span-4">
-                <div class="glass bento-card stagger-1">
-                    <div class="widget-title"><i class="fas fa-users"></i> Subjek Terdaftar</div>
-                    <div class="metric-value"><?= number_format($total_subjects) ?></div>
-                    <div class="text-muted tiny mt-3 uppercase tracking-tighter">Personel siap dianalisis</div>
+        <!-- Top Row: 3 Metric Cards -->
+        <div class="row g-2 mb-2 flex-shrink-0">
+            <div class="col-4">
+                <div class="glass p-3 stagger-1">
+                    <div class="widget-title mb-1" style="font-size:0.6rem"><i class="fas fa-users"></i> Subjek Terdaftar</div>
+                    <div class="fw-bold text-white fs-4"><?= number_format($total_subjects) ?></div>
+                    <div class="text-muted" style="font-size:0.6rem">Personel siap dianalisis</div>
                 </div>
             </div>
-            <div class="span-4">
-                <div class="glass bento-card stagger-2">
-                    <div class="widget-title"><i class="fas fa-sliders-h"></i> Kriteria Aktif</div>
-                    <div class="metric-value text-secondary"><?= number_format($total_criteria) ?></div>
-                    <div class="text-muted tiny mt-3 uppercase tracking-tighter">Parameter DSS Terpasang</div>
+            <div class="col-4">
+                <div class="glass p-3 stagger-2">
+                    <div class="widget-title mb-1" style="font-size:0.6rem"><i class="fas fa-sliders-h"></i> Kriteria Aktif</div>
+                    <div class="fw-bold text-secondary fs-4"><?= number_format($total_criteria) ?></div>
+                    <div class="text-muted" style="font-size:0.6rem">Parameter DSS Terpasang</div>
                 </div>
             </div>
-            <div class="span-4">
-                <div class="glass bento-card stagger-3">
-                    <div class="widget-title"><i class="fas fa-chart-line"></i> Rata-rata Skor</div>
-                    <div class="metric-value text-cyan"><?= number_format($avg_score, 1) ?></div>
-                    <div class="text-muted tiny mt-3 uppercase tracking-tighter">Indeks Performa Global</div>
+            <div class="col-4">
+                <div class="glass p-3 stagger-3">
+                    <div class="widget-title mb-1" style="font-size:0.6rem"><i class="fas fa-chart-line"></i> Rata-rata Skor</div>
+                    <div class="fw-bold text-cyan fs-4"><?= number_format($avg_score, 1) ?></div>
+                    <div class="text-muted" style="font-size:0.6rem">Indeks Performa Global</div>
                 </div>
             </div>
+        </div>
 
-            <!-- Input Form (Bento Style) -->
-            <div class="span-4">
-                <div class="glass bento-card h-100 stagger-2">
-                    <div class="widget-title mb-4"><i class="fas fa-pen-nib text-primary"></i> Log Entri Baru</div>
-                    <form method="POST">
-                        <div class="mb-4">
-                            <label
-                                class="form-label text-muted small fw-bold text-uppercase ms-1 tracking-widest">IDENTIFIKASI
-                                PERSONEL</label>
-                            <select name="employee_id" class="form-control-glass w-100" required>
+        <!-- Bottom Row: Form (left) + Table (right) -->
+        <div class="row g-2 flex-grow-1" style="min-height: 0;">
+            <!-- Input Form -->
+            <div class="col-4 h-100">
+                <div class="glass p-3 h-100 d-flex flex-column stagger-2">
+                    <div class="widget-title mb-2" style="font-size:0.65rem"><i class="fas fa-pen-nib text-primary"></i> Log Entri Baru</div>
+                    <form method="POST" class="d-flex flex-column flex-grow-1">
+                        <div class="mb-2">
+                            <label class="form-label text-muted small fw-bold text-uppercase ms-1" style="font-size:0.6rem; letter-spacing:0.1em">IDENTIFIKASI PERSONEL</label>
+                            <select name="employee_id" class="form-control-glass w-100 py-2" style="font-size:0.85rem" required>
                                 <option value="">-- Pilih Subject --</option>
                                 <?php foreach ($employees_list as $emp): ?>
                                     <option value="<?= $emp['id'] ?>"><?= htmlspecialchars($emp['name']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="mb-4">
-                            <label
-                                class="form-label text-muted small fw-bold text-uppercase ms-1 tracking-widest">PARAMETER
-                                ANALITIK</label>
-                            <select name="criteria_id" class="form-control-glass w-100" required>
+                        <div class="mb-2">
+                            <label class="form-label text-muted small fw-bold text-uppercase ms-1" style="font-size:0.6rem; letter-spacing:0.1em">PARAMETER ANALITIK</label>
+                            <select name="criteria_id" class="form-control-glass w-100 py-2" style="font-size:0.85rem" required>
                                 <option value="">-- Pilih Kriteria --</option>
                                 <?php foreach ($criteria_list as $crit): ?>
                                     <option value="<?= $crit['id'] ?>"><?= htmlspecialchars($crit['name']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="mb-5">
-                            <label
-                                class="form-label text-muted small fw-bold text-uppercase ms-1 tracking-widest">KUALITAS
-                                SKOR (0-100)</label>
-                            <input type="number" step="0.01" name="score" class="form-control-glass w-100 fs-4 py-3"
+                        <div class="mb-3">
+                            <label class="form-label text-muted small fw-bold text-uppercase ms-1" style="font-size:0.6rem; letter-spacing:0.1em">KUALITAS SKOR (0-100)</label>
+                            <input type="number" step="0.01" name="score" class="form-control-glass w-100 fs-5 py-2"
                                 placeholder="0.00" required>
                         </div>
-                        <button type="submit" name="save_score" class="btn-premium w-100 justify-content-center py-3">
-                            <i class="fas fa-cloud-arrow-up me-2"></i> PUBLIKASI NILAI
-                        </button>
+                        <div class="mt-auto">
+                            <button type="submit" name="save_score" class="btn-premium w-100 justify-content-center py-2">
+                                <i class="fas fa-cloud-arrow-up me-2"></i> PUBLIKASI NILAI
+                            </button>
+                        </div>
                     </form>
-
                 </div>
             </div>
 
-            <!-- Database Table (Bento Style) -->
-            <div class="span-8">
-                <div class="glass p-0 overflow-hidden shadow-glow-mini h-100 stagger-3">
-                    <div
-                        class="p-4 border-bottom border-white border-opacity-10 d-flex justify-content-between align-items-center bg-white bg-opacity-5">
-                        <div class="d-flex align-items-center gap-3">
-                            <h3 class="text-white fs-5 fw-bold m-0"><i class="fas fa-database text-primary me-2"></i>
-                            Rekapitulasi Skor</h3>
+            <!-- Table -->
+            <div class="col-8 h-100 d-flex flex-column" style="min-height:0">
+                <div class="glass p-0 overflow-hidden shadow-glow-mini h-100 stagger-3 d-flex flex-column" style="min-height:0">
+                    <div class="p-3 border-bottom border-white border-opacity-10 d-flex justify-content-between align-items-center bg-white bg-opacity-5 flex-shrink-0">
+                        <div class="d-flex align-items-center gap-2">
+                            <h3 class="text-white fs-6 fw-bold m-0"><i class="fas fa-database text-primary me-2"></i>Rekapitulasi Skor</h3>
                             <form method="GET" class="d-flex align-items-center gap-2">
-                                <select name="filter_type" class="form-control-glass py-1 px-2" style="font-size: 0.8rem;" onchange="this.form.submit()">
+                                <select name="filter_type" class="form-control-glass py-1 px-2"
+                                    style="font-size: 0.75rem;" onchange="this.form.submit()">
                                     <option value="daily" <?= $filter_type == 'daily' ? 'selected' : '' ?>>Harian</option>
                                     <option value="weekly" <?= $filter_type == 'weekly' ? 'selected' : '' ?>>Mingguan</option>
                                     <option value="monthly" <?= $filter_type == 'monthly' ? 'selected' : '' ?>>Bulanan</option>
                                 </select>
-                                
                                 <?php if ($filter_type == 'daily'): ?>
-                                    <input type="date" name="filter_date" value="<?= $filter_date ?>" class="form-control-glass py-1 px-2" style="font-size: 0.8rem;" onchange="this.form.submit()">
+                                    <input type="date" name="filter_date" value="<?= $filter_date ?>"
+                                        class="form-control-glass py-1 px-2" style="font-size: 0.75rem;"
+                                        onchange="this.form.submit()">
                                 <?php elseif ($filter_type == 'monthly'): ?>
-                                    <input type="month" name="filter_month" value="<?= $filter_month ?>" class="form-control-glass py-1 px-2" style="font-size: 0.8rem;" onchange="this.form.submit()">
+                                    <input type="month" name="filter_month" value="<?= $filter_month ?>"
+                                        class="form-control-glass py-1 px-2" style="font-size: 0.75rem;"
+                                        onchange="this.form.submit()">
                                 <?php else: ?>
-                                    <input type="week" name="filter_week" value="<?= $filter_week ?>" class="form-control-glass py-1 px-2" style="font-size: 0.8rem; width: 200px;" onchange="this.form.submit()">
+                                    <input type="week" name="filter_week" value="<?= $filter_week ?>"
+                                        class="form-control-glass py-1 px-2" style="font-size: 0.75rem; width: 180px;"
+                                        onchange="this.form.submit()">
                                 <?php endif; ?>
                             </form>
                         </div>
-                        <div class="d-flex gap-2">
-                            <a href="export_rekap.php?type=pdf&filter_type=<?= $filter_type ?>&filter_date=<?= $filter_date ?>&filter_week=<?= $filter_week ?>&filter_month=<?= $filter_month ?>" target="_blank" class="btn-premium py-1 px-3" style="font-size: 0.75rem;">
+                        <div class="d-flex gap-2 align-items-center">
+                            <a href="export_rekap.php?type=pdf&filter_type=<?= $filter_type ?>&filter_date=<?= $filter_date ?>&filter_week=<?= $filter_week ?>&filter_month=<?= $filter_month ?>"
+                                target="_blank" class="btn-premium py-1 px-2" style="font-size: 0.65rem;">
                                 <i class="fas fa-file-pdf me-1"></i> PDF
                             </a>
-                            <a href="export_rekap.php?type=excel&filter_type=<?= $filter_type ?>&filter_date=<?= $filter_date ?>&filter_week=<?= $filter_week ?>&filter_month=<?= $filter_month ?>" class="btn-premium py-1 px-3" style="font-size: 0.75rem; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); color: #10b981;">
+                            <a href="export_rekap.php?type=excel&filter_type=<?= $filter_type ?>&filter_date=<?= $filter_date ?>&filter_week=<?= $filter_week ?>&filter_month=<?= $filter_month ?>"
+                                class="btn-premium py-1 px-2"
+                                style="font-size: 0.65rem; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); color: #10b981;">
                                 <i class="fas fa-file-excel me-1"></i> EXCEL
                             </a>
-
-                            <span class="badge-glass badge-indigo ms-2"><?= count($consolidated_scores) ?> PERSONEL</span>
+                            <span class="badge-glass badge-indigo" style="font-size:0.6rem"><?= count($consolidated_scores) ?> PERSONEL</span>
                         </div>
                     </div>
 
-                    <div class="premium-table-container" style="max-height: 500px;">
-                        <table class="premium-table">
+                    <div class="premium-table-container flex-grow-1 overflow-auto">
+                        <table class="premium-table" style="font-size: 0.8rem;">
                             <thead>
                                 <tr>
-                                    <th class="ps-5">Subjek</th>
+                                    <th class="ps-4">Subjek</th>
                                     <?php foreach ($criteria_list as $c): ?>
                                         <th class="text-center" title="<?= htmlspecialchars($c['name']) ?>">
                                             C<?= $c['id'] ?>
                                         </th>
                                     <?php endforeach; ?>
-                                    <th class="text-end pe-5">Skor Gabungan (SAW)</th>
+                                    <th class="text-end pe-4">Skor Gabungan (SAW)</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php if (empty($consolidated_scores)): ?>
                                     <tr>
-                                        <td colspan="<?= count($criteria_list) + 2 ?>" class="text-center py-5 text-muted fade-50">
-                                            <i class="fas fa-folder-open d-block fs-1 mb-3 opacity-25"></i>
+                                        <td colspan="<?= count($criteria_list) + 2 ?>"
+                                            class="text-center py-4 text-muted fade-50">
+                                            <i class="fas fa-folder-open d-block fs-3 mb-2 opacity-25"></i>
                                             Belum ada data evaluasi tercatat.
                                         </td>
                                     </tr>
                                 <?php else: ?>
                                     <?php foreach ($consolidated_scores as $emp_id => $data): ?>
                                         <tr>
-                                            <td class="ps-5">
+                                            <td class="ps-4">
                                                 <div class="fw-bold text-white"><?= htmlspecialchars($data['name']) ?></div>
                                             </td>
                                             <?php foreach ($criteria_list as $c): ?>
                                                 <td class="text-center">
                                                     <?php if (isset($data['scores'][$c['id']])): ?>
                                                         <div class="text-primary fw-bold">
-                                                            <?= (float)$data['scores'][$c['id']] ?>
+                                                            <?= (float) $data['scores'][$c['id']] ?>
                                                         </div>
                                                     <?php else: ?>
                                                         <div class="text-muted opacity-25">-</div>
                                                     <?php endif; ?>
                                                 </td>
                                             <?php endforeach; ?>
-                                            <td class="text-end pe-5">
-                                                <div class="badge-glass badge-emerald font-monospace fw-bold fs-6">
+                                            <td class="text-end pe-4">
+                                                <div class="badge-glass badge-emerald font-monospace fw-bold" style="font-size:0.8rem">
                                                     <?= number_format($saw_scores[$emp_id] ?? 0, 4) ?>
                                                 </div>
                                             </td>
@@ -326,7 +321,6 @@ require_once 'includes/header.php';
                             </tbody>
                         </table>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -334,12 +328,8 @@ require_once 'includes/header.php';
 </div>
 
 <style>
-    .span-4 {
-        grid-column: span 4;
-    }
-
-    .span-8 {
-        grid-column: span 8;
+    body, html {
+        overflow: hidden;
     }
 
     .shadow-glow-mini {

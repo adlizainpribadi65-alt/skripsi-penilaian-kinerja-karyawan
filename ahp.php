@@ -132,59 +132,56 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save_matrix'])) {
 
 require_once 'includes/header.php';
 ?>
-<div class="app-container">
+<div class="app-container" style="height: 100vh; overflow: hidden;">
     <?php require_once 'includes/sidebar.php'; ?>
 
-    <main class="content-main">
-        <div class="header-section mb-5">
+    <main class="content-main d-flex flex-column" style="height: 100vh; overflow: hidden; padding-bottom: 0;">
+        <div class="header-section mb-2 flex-shrink-0 d-flex justify-content-between align-items-center">
             <div>
-                <h1 class="display-5 fw-bold text-white mb-2">Matriks Perbandingan AHP</h1>
-                <p class="text-muted fs-5">Tentukan nilai preferensi antar kriteria menggunakan skala Saaty (1-9).</p>
+                <h1 class="display-6 fw-bold text-white mb-1"><i class="fas fa-network-wired text-primary me-2"></i> Matriks AHP</h1>
+                <p class="text-muted fs-6 mb-0">Input preferensi berskala Saaty (1-9) dan validasi rasio konsistensi.</p>
             </div>
+            <?php if ($message): ?>
+                 <div class="badge-glass <?= $messageType == 'success' ? 'badge-emerald' : 'badge-rose' ?> py-2 px-4 shadow-glow-mini fs-6">
+                     <i class="fas <?= $messageType == 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle' ?> me-2"></i> <?= $message ?>
+                 </div>
+            <?php endif; ?>
         </div>
 
-        <?php if ($message): ?>
-            <div class="glass d-flex align-items-center p-4 mb-5 border-start border-4 <?= $messageType == 'success' ? 'border-primary' : 'border-danger' ?>">
-                <i class="fas <?= $messageType == 'success' ? 'fa-check-circle text-primary' : 'fa-exclamation-triangle text-danger' ?> me-3 fs-3"></i>
-                <div class="fw-medium text-white"><?= $message ?></div>
-            </div>
-        <?php endif; ?>
-
-        <div class="span-12 mb-5">
-             <div class="glass p-4">
-                 <h4 class="text-white mb-4"><i class="fas fa-balance-scale"></i> Input Pairwise Comparison</h4>
-                 <div class="alert border border-primary bg-primary bg-opacity-10 text-white mb-4 p-3" style="font-size: 0.85rem;">
-                    <i class="fas fa-info-circle text-primary me-2"></i> <b>Skala Saaty:</b> 
-                    <span class="ms-2"><b>1</b>=Sama, <b>3</b>=Sedikit Lebih, <b>5</b>=Lebih, <b>7</b>=Sangat, <b>9</b>=Mutlak (Kiri lebih penting). Angka Pecahan (1/3, 1/5) adalah kebalikannya.</span>
-                 </div>
-                 <form method="POST">
-                     <div class="premium-table-container mb-4" style="overflow-x: auto; width: 100%;">
-                        <table class="premium-table">
+        <div class="row g-3 flex-grow-1 min-vh-0 pb-3" style="min-height:0; margin-left: 0; margin-right: 0;">
+            <!-- Left Panel: Matrix Input (form) -->
+            <div class="col-lg-6 h-100 d-flex flex-column p-0 pe-2">
+                <form method="POST" class="glass d-flex flex-column h-100 w-100 p-3 m-0 shadow-lg">
+                    <div class="d-flex justify-content-between align-items-center mb-2 flex-shrink-0">
+                        <div class="d-flex align-items-center gap-2">
+                            <h5 class="text-white m-0 fw-bold">Pairwise Comparison</h5>
+                            <span class="badge bg-primary bg-opacity-25 text-primary" style="font-size: 0.65rem;">Kiri = Baris, Kanan = Kolom</span>
+                        </div>
+                        <button type="submit" name="save_matrix" class="btn-premium px-3 py-1" style="font-size:0.75rem; border-radius: 6px;">
+                            <i class="fas fa-save me-1"></i> HITUNG & SIMPAN
+                        </button>
+                    </div>
+                    
+                    <div class="premium-table-container flex-grow-1 overflow-auto mt-2" style="border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                        <table class="premium-table" style="font-size:0.75rem;">
                             <thead>
                                 <tr>
-                                    <th>Kriteria</th>
+                                    <th class="ps-3" style="background:#0f172a">Kriteria</th>
                                     <?php foreach ($criteria as $c): ?>
-                                       <th class="text-center"><?= htmlspecialchars($c['name']) ?></th>
+                                       <th class="text-center" style="background:#0f172a"><?= htmlspecialchars($c['name']) ?></th>
                                     <?php endforeach; ?>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($criteria as $i => $c1): ?>
                                     <tr>
-                                        <td class="fw-bold text-primary"><?= htmlspecialchars($c1['name']) ?></td>
+                                        <td class="fw-bold text-primary ps-3" style="background: rgba(255,255,255,0.02)"><?= htmlspecialchars($c1['name']) ?></td>
                                         <?php foreach ($criteria as $j => $c2): 
-                                            // Hanya render input dropdown di matriks segitiga atas
                                             if ($i < $j):
-                                                $key = $c1['id'] . '_' . $c2['id'];
                                                 $val = isset($matrix[$c1['id']][$c2['id']]) ? $matrix[$c1['id']][$c2['id']] : 1;
-                                                $rev_val = isset($matrix[$c2['id']][$c1['id']]) ? $matrix[$c2['id']][$c1['id']] : 1;
-                                                
-                                                // Jika val < 1, berarti yang sebenarnya > 1 adalah kebalikannya
-                                                // Untuk kemudahan form HTML, kita gunakan val jika >= 1, dan pecahan string jika < 1
-                                                // Solusi yang lebih sederhana: Dropdown dengan opsi 1/9, 1/8... 1 ... 8, 9
                                         ?>
                                         <td class="text-center px-1">
-                                            <select name="val[<?= $c1['id'] ?>][<?= $c2['id'] ?>]" class="form-control-glass text-center fw-bold" style="font-size: 0.85rem; padding: 4px; width: 100%; min-width: 65px;">
+                                            <select name="val[<?= $c1['id'] ?>][<?= $c2['id'] ?>]" class="form-control-glass text-center fw-bold" style="font-size: 0.75rem; padding: 2px 4px; width: 100%; min-width: 50px; background: rgba(0,0,0,0.2)">
                                                 <option value="9" <?= abs($val - 9) < 0.01 ? 'selected' : '' ?>>9</option>
                                                 <option value="8" <?= abs($val - 8) < 0.01 ? 'selected' : '' ?>>8</option>
                                                 <option value="7" <?= abs($val - 7) < 0.01 ? 'selected' : '' ?>>7</option>
@@ -205,116 +202,119 @@ require_once 'includes/header.php';
                                             </select>
                                         </td>
                                         <?php elseif ($i == $j): ?>
-                                        <td class="text-center text-muted">1.00</td>
+                                        <td class="text-center text-muted fw-bold">1.00</td>
                                         <?php else: ?>
-                                        <td class="text-center text-muted" style="font-size:0.85rem">
-                                            <?= number_format(isset($matrix[$c1['id']][$c2['id']]) ? $matrix[$c1['id']][$c2['id']] : 1, 3) ?>
+                                        <td class="text-center text-muted" style="font-size:0.75rem opacity: 0.6;">
+                                            <?= number_format(isset($matrix[$c1['id']][$c2['id']]) ? $matrix[$c1['id']][$c2['id']] : 1, 2) ?>
                                         </td>
                                         <?php endif; ?>
-                                    <?php endforeach; ?>
+                                        <?php endforeach; ?>
                                     </tr>
                                 <?php endforeach; ?>
                                 
-                                <tr style="background: rgba(255,255,255,0.05)">
-                                    <td class="fw-bold text-white">Jumlah Kolom</td>
+                                <tr style="background: rgba(255,255,255,0.03)">
+                                    <td class="fw-bold text-white ps-3">Jumlah Kolom</td>
                                     <?php foreach ($criteria as $c): ?>
-                                       <td class="text-center fw-bold text-accent"><?= number_format($col_sums[$c['id']], 3) ?></td>
+                                       <td class="text-center fw-bold text-accent"><?= number_format($col_sums[$c['id']], 2) ?></td>
                                     <?php endforeach; ?>
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Right Panel: Results -->
+            <div class="col-lg-6 h-100 d-flex flex-column gap-3 p-0 ps-2" style="min-height:0">
+                <!-- 4 Metrics -->
+                <div class="row g-2 flex-shrink-0">
+                    <div class="col-3">
+                        <div class="glass p-2 px-3 text-center h-100 d-flex flex-column justify-content-center border-start border-2 border-primary">
+                             <div class="text-muted font-monospace tracking-widest" style="font-size: 0.55rem; letter-spacing: 1px;">LAMBDA MAX</div>
+                             <div class="fw-bold text-white fs-5"><?= number_format($lambda_max, 3) ?></div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="glass p-2 px-3 text-center h-100 d-flex flex-column justify-content-center">
+                             <div class="text-muted font-monospace tracking-widest" style="font-size: 0.55rem; letter-spacing: 1px;">CONS. INDEX</div>
+                             <div class="fw-bold text-white fs-5"><?= number_format($ci, 3) ?></div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="glass p-2 px-3 text-center h-100 d-flex flex-column justify-content-center">
+                             <div class="text-muted font-monospace tracking-widest" style="font-size: 0.55rem; letter-spacing: 1px;">RANDOM INDEX</div>
+                             <div class="fw-bold text-white fs-5"><?= number_format($ri, 2) ?></div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="glass p-2 px-3 text-center h-100 d-flex flex-column justify-content-center position-relative <?= $cr > 0.1 ? 'border-danger box-shadow-danger' : 'border-emerald' ?>" style="border-width: 2px; border-style: solid;">
+                             <div class="text-muted font-monospace tracking-widest" style="font-size: 0.55rem; letter-spacing: 1px;">CONS. RATIO</div>
+                             <div class="fw-bold <?= $cr > 0.1 ? 'text-danger' : 'text-emerald' ?> fs-5"><?= number_format($cr, 3) ?></div>
+                             <div class="<?= $cr > 0.1 ? 'text-danger' : 'text-emerald' ?> fw-bold" style="font-size: 0.5rem; position: absolute; bottom: 2px; right: 4px;"><?= $cr > 0.1 ? 'FAIL' : 'OK' ?></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Priority Vector -->
+                <div class="glass p-3 flex-shrink-0 animate-fadeIn stagger-1">
+                     <h6 class="text-white mb-2 fw-bold" style="font-size: 0.85rem;"><i class="fas fa-chart-pie text-primary me-2"></i> Priority Vector (Bobot Akhir)</h6>
+                     <div class="row g-2">
+                     <?php foreach ($criteria as $c): ?>
+                          <div class="col-6">
+                              <div class="d-flex justify-content-between align-items-center p-2 px-3" style="background:rgba(255,255,255,0.05); border-radius: 6px;">
+                                    <div class="small fw-bold text-white text-truncate" style="max-width: 70%;"><?= htmlspecialchars($c['name']) ?></div>
+                                    <div class="text-primary fw-bold font-monospace"><?= number_format($priority_vector[$c['id']] * 100, 1) ?>%</div>
+                              </div>
+                          </div>
+                     <?php endforeach; ?>
                      </div>
-                     <button type="submit" name="save_matrix" class="btn-premium px-5 py-3">
-                        <i class="fas fa-calculator me-2"></i> Hitung & Validasi AHP
-                     </button>
-                 </form>
-             </div>
-        </div>
-        
-        <hr class="border-secondary my-5 opacity-25">
+                </div>
 
-        <h3 class="text-white mb-4"><i class="fas fa-square-root-variable text-primary me-2"></i> Hasil & Validasi AHP</h3>
-        
-        <div class="row g-4 mb-5">
-            <div class="col-md-3">
-                <div class="glass p-4 text-center h-100">
-                    <div class="text-muted small uppercase tracking-widest mb-2">Lambda Max</div>
-                    <div class="fs-2 text-primary fw-bold font-monospace"><?= number_format($lambda_max, 4) ?></div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="glass p-4 text-center h-100">
-                    <div class="text-muted small uppercase tracking-widest mb-2">Consistency Index (CI)</div>
-                    <div class="fs-2 text-primary fw-bold font-monospace"><?= number_format($ci, 4) ?></div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="glass p-4 text-center h-100">
-                    <div class="text-muted small uppercase tracking-widest mb-2">Random Index (RI)</div>
-                    <div class="fs-2 text-white fw-bold font-monospace"><?= number_format($ri, 2) ?></div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="glass p-4 text-center h-100 position-relative <?= $cr > 0.1 ? 'border border-danger' : 'border border-success' ?>">
-                    <div class="text-muted small uppercase tracking-widest mb-2">Consistency Ratio (CR)</div>
-                    <div class="fs-2 <?= $cr > 0.1 ? 'text-danger' : 'text-success' ?> fw-bold font-monospace"><?= number_format($cr, 4) ?></div>
-                    <div class="mt-2 badge-glass <?= $cr > 0.1 ? 'badge-rose' : 'badge-emerald' ?>">
-                        <?= $cr > 0.1 ? 'TIDAK KONSISTEN' : 'KONSISTEN' ?>
-                    </div>
+                <!-- Normalization Matrix -->
+                <div class="glass p-3 flex-grow-1 d-flex flex-column min-vh-0 animate-fadeIn stagger-2 shadow-lg">
+                     <h6 class="text-white mb-2 flex-shrink-0 fw-bold" style="font-size: 0.85rem;"><i class="fas fa-border-all text-primary me-2"></i> Matriks Normalisasi</h6>
+                     <div class="premium-table-container flex-grow-1 overflow-auto" style="border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                           <table class="premium-table" style="font-size:0.75rem;">
+                               <thead>
+                                   <tr>
+                                       <th class="ps-3" style="background:#0f172a">Kriteria</th>
+                                       <?php foreach ($criteria as $c): ?>
+                                          <th class="text-center" style="background:#0f172a" title="<?= htmlspecialchars($c['name']) ?>">
+                                              <?= substr(htmlspecialchars($c['name']), 0, 8) ?>.
+                                          </th>
+                                       <?php endforeach; ?>
+                                   </tr>
+                               </thead>
+                               <tbody>
+                                   <?php foreach ($criteria as $c1): ?>
+                                   <tr>
+                                       <td class="text-primary fw-bold ps-3" style="background: rgba(255,255,255,0.02)"><?= htmlspecialchars($c1['name']) ?></td>
+                                       <?php foreach ($criteria as $c2): ?>
+                                           <td class="text-center fw-medium text-white opacity-75"><?= number_format($norm_matrix[$c1['id']][$c2['id']], 3) ?></td>
+                                       <?php endforeach; ?>
+                                   </tr>
+                                   <?php endforeach; ?>
+                               </tbody>
+                           </table>
+                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="row g-4">
-            <!-- Normalization Matrix -->
-            <div class="col-md-8">
-                <div class="glass p-4">
-                    <h5 class="text-white mb-3">Matriks Normalisasi</h5>
-                    <div class="premium-table-container">
-                        <table class="premium-table" style="font-size:0.85rem">
-                            <thead>
-                                <tr>
-                                    <th>Kriteria</th>
-                                    <?php foreach ($criteria as $c): ?>
-                                       <th class="text-center"><?= $c['name'] ?></th>
-                                    <?php endforeach; ?>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($criteria as $c1): ?>
-                                <tr>
-                                    <td class="text-primary fw-bold"><?= $c1['name'] ?></td>
-                                    <?php foreach ($criteria as $c2): ?>
-                                        <td class="text-center text-muted"><?= number_format($norm_matrix[$c1['id']][$c2['id']], 4) ?></td>
-                                    <?php endforeach; ?>
-                                </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Priority Vector (Weights) -->
-            <div class="col-md-4">
-                <div class="glass p-4 h-100 border-start border-4 border-primary">
-                    <h5 class="text-white mb-3">Priority Vector (Bobot)</h5>
-                    <?php foreach ($criteria as $c): ?>
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="text-white small fw-bold uppercase"><?= $c['name'] ?></span>
-                            <span class="text-primary fw-bold font-monospace"><?= number_format($priority_vector[$c['id']] * 100, 2) ?>%</span>
-                        </div>
-                        <div class="progress mb-4" style="height:4px; background: rgba(255,255,255,0.05)">
-                            <div class="progress-bar bg-primary shadow-glow" style="width: <?= $priority_vector[$c['id']] * 100 ?>%"></div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        </div>
-        <br>
     </main>
 </div>
+
 <style>
-    .span-12 { grid-column: span 12; }
+    body, html {
+        overflow: hidden !important;
+    }
+    /* override padding of table cells specifically for this dense view */
+    .premium-table th, .premium-table td {
+        padding: 6px 8px !important;
+        vertical-align: middle;
+    }
+    .box-shadow-danger {
+        box-shadow: 0 0 10px rgba(239, 68, 68, 0.3) !important;
+    }
 </style>
+
 <?php require_once 'includes/footer.php'; ?>

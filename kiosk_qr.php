@@ -31,11 +31,11 @@ if (strpos($host, 'localhost') !== false || strpos($host, '127.0.0.1') !== false
 $kiosk_url = $protocol . "://" . $host . "/dss-saw/industrial/kiosk.php";
 ?>
 
-<div class="app-container">
+<div class="app-container" style="height: 100vh; overflow: hidden;">
     <?php include 'includes/sidebar.php'; ?>
 
-    <main class="main-content">
-        <div class="content-header mb-5">
+    <main class="main-content d-flex flex-column" style="height: 100vh; overflow: hidden; padding-bottom: 0;">
+        <div class="content-header mb-3 flex-shrink-0">
             <div class="d-flex align-items-center gap-3">
                 <div class="header-icon-box bg-primary bg-opacity-10 text-primary">
                     <i class="fas fa-qrcode"></i>
@@ -47,9 +47,9 @@ $kiosk_url = $protocol . "://" . $host . "/dss-saw/industrial/kiosk.php";
             </div>
         </div>
 
-        <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-5">
-                <div class="glass-card p-5 text-center">
+        <div class="w-100 flex-grow-1 d-flex align-items-center justify-content-center mb-4" style="min-height: 0; overflow-y: auto;">
+            <div style="width: 100%; max-width: 480px; padding: 15px;">
+                <div class="glass-card p-4 p-md-5 text-center">
                     <div class="mb-4">
                         <i class="fas fa-display fs-1 text-primary mb-3"></i>
                         <h4 class="text-white mb-1">Akses Kiosk Terminal</h4>
