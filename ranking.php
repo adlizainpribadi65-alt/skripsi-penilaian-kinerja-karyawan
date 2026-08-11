@@ -40,19 +40,7 @@ if (!empty($matrix) && !empty($criteria)) {
             $score = $scores[$c['id']];
             $weight = $c['weight'] / 100;
 
-            if (isset($crit_stats[$c['id']])) {
-                $max = $crit_stats[$c['id']]['max'];
-                $min = $crit_stats[$c['id']]['min'];
-
-                if ($c['type'] == 'benefit' && $max > 0) {
-                    $r = $score / $max;
-                } elseif ($c['type'] == 'cost' && $score > 0) {
-                    $r = $min / $score;
-                } else {
-                    $r = 0;
-                }
-                $v_score += $weight * $r;
-            }
+            $v_score += ($score * $weight);
         }
         $rankings[] = [
             'id' => $emp_id,
@@ -233,14 +221,13 @@ require_once 'includes/header.php';
                                     <th width="80px" class="ps-5 text-center">Rank</th>
                                     <th>Nama Subyek</th>
                                     <th>Nilai (V)</th>
-                                    <th>Status</th>
                                     <th class="text-end pe-5">Integritas</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php if (empty($rankings)): ?>
                                     <tr>
-                                        <td colspan="5" class="text-center py-5 text-muted italic">Data kosong.</td>
+                                        <td colspan="4" class="text-center py-5 text-muted italic">Data kosong.</td>
                                     </tr>
                                 <?php else: ?>
                                     <?php foreach ($rankings as $index => $rank): ?>
@@ -261,15 +248,9 @@ require_once 'includes/header.php';
                                             </td>
                                             <td>
                                                 <div class="fw-bold text-primary font-monospace fs-4">
-                                                    <?= number_format($rank['score'], 4) ?>
+                                                    <?= number_format($rank['score'], 2) ?>
                                                 </div>
                                             </td>
-                                            <td>
-                                                <span
-                                                    class="badge-glass fw-bold <?= $index < 2 ? 'badge-emerald' : ($index < 5 ? 'badge-indigo' : 'badge-rose') ?>"
-                                                    style="opacity: 1 !important; border-width: 1.5px;">
-                                                    <?= $index < 2 ? 'DIREKOMENDASIKAN' : ($index < 5 ? 'STANDAR' : 'EVALUASI') ?>
-                                                </span>
                                             </td>
                                             <td class="pe-5 text-end">
                                                 <div class="d-inline-flex align-items-center gap-2 text-emerald fw-bold font-monospace"

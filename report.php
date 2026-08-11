@@ -14,22 +14,11 @@ foreach ($score_data as $s) {
 
 $results = [];
 if (!empty($employees) && !empty($criteria)) {
-    $extrema = [];
-    foreach ($criteria as $crit) {
-        $vals = [];
-        foreach ($employees as $emp) {
-            $vals[] = $matrix[$emp['id']][$crit['id']] ?? 0;
-        }
-        $extrema[$crit['id']] = ($crit['type'] == 'benefit') ? (!empty($vals) ? max($vals) : 1) : (!empty($vals) ? min($vals) : 1);
-    }
-
     foreach ($employees as $emp) {
         $v_total = 0;
         foreach ($criteria as $crit) {
             $x = $matrix[$emp['id']][$crit['id']] ?? 0;
-            $ex = $extrema[$crit['id']];
-            $r = ($crit['type'] == 'benefit') ? (($ex != 0) ? ($x / $ex) : 0) : (($x != 0) ? ($ex / $x) : 0);
-            $v_total += $r * ((float) $crit['weight'] / 100);
+            $v_total += $x * ((float) $crit['weight'] / 100);
         }
         $results[] = [
             'name' => $emp['name'],
@@ -371,7 +360,8 @@ function getIndoDate($date)
                                 <th width="120px" class="ps-5 text-center">POSISI</th>
                                 <th>IDENTITAS PERSONEL</th>
                                 <th>NIK / DEPARTEMEN</th>
-                                <th class="text-end pe-5">SKOR PREFERENSI (V)</th>
+                                <th class="text-center">TARGET & KETERANGAN</th>
+                                <th class="text-end pe-5">SKOR (V)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -392,9 +382,28 @@ function getIndoDate($date)
                                             <?= htmlspecialchars($res['position']) ?>
                                         </div>
                                     </td>
+                                    <td class="text-center">
+                                        <?php
+                                        $score100 = round($res['score'], 2);
+                                        if ($score100 > 70) {
+                                            $ket = 'DIGAJI';
+                                            $bg = 'badge-emerald';
+                                        } elseif ($score100 == 70) {
+                                            $ket = 'DIBINA';
+                                            $bg = 'badge-indigo';
+                                        } else {
+                                            $ket = 'DIKELUARKAN';
+                                            $bg = 'badge-rose';
+                                        }
+                                        ?>
+                                        <div><span class="text-muted small">Target: 70</span></div>
+                                        <span class="badge-glass fw-bold <?= $bg ?>" style="opacity: 1 !important; border-width: 1.5px;">
+                                            <?= $ket ?>
+                                        </span>
+                                    </td>
                                     <td class="text-end pe-5">
                                         <div class="fw-bold text-primary display-6 font-monospace"
-                                            style="font-size: 1.8rem;"><?= number_format($res['score'], 4) ?></div>
+                                            style="font-size: 1.8rem;"><?= number_format($res['score'], 2) ?></div>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

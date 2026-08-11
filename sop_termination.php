@@ -49,6 +49,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         exit;
     }
 
+    if ($_POST['action'] === 'auto_sop_trigger') {
+        $emp_id = intval($_POST['employee_id']);
+        $trigger_type = $_POST['trigger_type']; 
+        
+        if ($trigger_type === 'dibina') {
+            $type = 'disciplinary';
+            $reason = "Kinerja bulanan/mingguan gagal mencapai target minimum (70). Karyawan masuk dalam masa pembinaan khusus dan dievaluasi.";
+            $status = 'draft';
+        } else {
+            // dikeluarkan => langsung saja (executed)
+            $type = 'layoff';
+            $reason = "Evaluasi hasil kinerja fatal (DIKELUARKAN). Kegagalan berulang atau performa ekstrem di luar batas toleransi perusahaan.";
+            $status = 'executed';
+        }
+
+        try {
+            $stmt = $pdo->prepare("INSERT INTO termination_records (employee_id, termination_type, reason, effective_date, notice_period_days, severance_months, status) VALUES (?, ?, ?, CURDATE(), 30, 0, ?)");
+            $stmt->execute([$emp_id, $type, $reason, $status]);
+            
+            $record_id = $pdo->lastInsertId();
+
+            if ($status === 'executed') {
+                try {
+                    $pdo->exec("ALTER TABLE employees ADD COLUMN IF NOT EXISTS status ENUM('active','terminated','resigned') DEFAULT 'active'");
+                } catch (Exception $e) {}
+                $pdo->prepare("UPDATE employees SET status = 'terminated' WHERE id = ?")->execute([$emp_id]);
+                $pdo->prepare("UPDATE termination_records SET approved_by = 'Sistem Auto-Kinerja' WHERE id = ?")->execute([$record_id]);
+            }
+            $_SESSION['success_msg'] = "SOP berhasil diinisiasi otomatis dari Rekapitulasi Kinerja.";
+        } catch (PDOException $e) {
+            $_SESSION['error_msg'] = "Gagal memproses auto-SOP: " . $e->getMessage();
+        }
+        header("Location: sop_termination.php");
+        exit;
+    }
+
     if ($_POST['action'] === 'update_status') {
         $record_id = intval($_POST['record_id']);
         $new_status = $_POST['new_status'];
@@ -101,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 }
 
 // Fetch all employee data for dropdown
-$employees_list = $pdo->query("SELECT id, nik, name, position, department FROM employees ORDER BY name ASC")->fetchAll();
+$employees_list = $pdo->query("SELECT id, nik, name, position, department FROM employees ORDER BY id ASC")->fetchAll();
 
 // Fetch all termination records with employee details
 $records = $pdo->query("SELECT t.*, e.name as emp_name, e.nik as emp_nik, e.position as emp_position, e.department as emp_department 

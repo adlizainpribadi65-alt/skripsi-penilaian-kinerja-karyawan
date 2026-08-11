@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERD (Chen Notation) - Reegioella Hub</title>
+    <!-- Add Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            margin: 0;
+            color: #0f172a;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            font-weight: 800;
+        }
+        p {
+            margin: 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+        .diagram-container {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 30px;
+            width: 100%;
+            max-width: 1200px;
+            overflow-x: auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Entity Relationship Diagram (Chen Notation)</h1>
+        <p>Sistem Penilaian Kinerja Karyawan (Reegioella Hub)</p>
+    </div>
+
+    <div class="diagram-container">
+        <!-- Element to hold the mermaid diagram -->
+        <pre class="mermaid">
+        flowchart TD
+          classDef entity fill:#e2e8f0,stroke:#64748b,stroke-width:2px,color:#0f172a,font-weight:bold,shape:rect;
+          classDef attribute fill:#dcfce7,stroke:#22c55e,stroke-width:1px,color:#166534;
+          classDef relation fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px,color:#1e40af;
+          
+          %% ENTITY: KARYAWAN
+          E_KAR[KARYAWAN]:::entity
+          A_KAR_ID([_ID Karyawan_]):::attribute
+          A_KAR_NIK([NIK]):::attribute
+          A_KAR_NAMA([Nama]):::attribute
+          A_KAR_JAB([Jabatan]):::attribute
+          A_KAR_DEP([Departemen]):::attribute
+
+          E_KAR --- A_KAR_ID
+          E_KAR --- A_KAR_NIK
+          E_KAR --- A_KAR_NAMA
+          E_KAR --- A_KAR_JAB
+          E_KAR --- A_KAR_DEP
+          
+          %% ENTITY: KRITERIA
+          E_KRI[KRITERIA]:::entity
+          A_KRI_ID([_ID Kriteria_]):::attribute
+          A_KRI_NAMA([Nama Kriteria]):::attribute
+          A_KRI_BOBOT([Bobot]):::attribute
+          A_KRI_TIPE([Tipe B/C]):::attribute
+
+          E_KRI --- A_KRI_ID
+          E_KRI --- A_KRI_NAMA
+          E_KRI --- A_KRI_BOBOT
+          E_KRI --- A_KRI_TIPE
+
+          %% RELATION: PENILAIAN (KARYAWAN - KRITERIA)
+          R_NILAI{Mendapat Nilai}:::relation
+          A_NILAI_SKOR([Skor Penilaian]):::attribute
+          
+          E_KAR ---|1| R_NILAI
+          R_NILAI ---|N| E_KRI
+          R_NILAI --- A_NILAI_SKOR
+
+          %% ENTITY: ABSENSI
+          E_ABS[ABSENSI]:::entity
+          A_ABS_ID([_ID Absen_]):::attribute
+          A_ABS_TGL([Tanggal]):::attribute
+          A_ABS_IN([Time In]):::attribute
+          A_ABS_OUT([Time Out]):::attribute
+
+          E_ABS --- A_ABS_ID
+          E_ABS --- A_ABS_TGL
+          E_ABS --- A_ABS_IN
+          E_ABS --- A_ABS_OUT
+
+          %% RELATION: MELAKUKAN (KARYAWAN - ABSENSI)
+          R_ABSEN{Melakukan}:::relation
+          E_KAR ---|1| R_ABSEN
+          R_ABSEN ---|N| E_ABS
+          
+          %% ENTITY: PRODUKSI
+          E_PROD[PRODUKSI LOG]:::entity
+          A_PROD_ID([_ID Produksi_]):::attribute
+          A_PROD_TGL([Tanggal]):::attribute
+          A_PROD_QTY([Kuantitas]):::attribute
+
+          E_PROD --- A_PROD_ID
+          E_PROD --- A_PROD_TGL
+          E_PROD --- A_PROD_QTY
+
+          %% RELATION: MENGHASILKAN (KARYAWAN - PRODUKSI)
+          R_PROD{Menghasilkan}:::relation
+          E_KAR ---|1| R_PROD
+          R_PROD ---|N| E_PROD
+
+        </pre>
+    </div>
+
+    <!-- Include Mermaid JS library -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#ffffff',
+                lineColor: '#94a3b8',
+                textColor: '#0f172a'
+            },
+            fontFamily: 'Inter, sans-serif'
+        });
+    </script>
+</body>
+</html>

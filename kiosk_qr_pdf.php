@@ -26,7 +26,9 @@ if (strpos($host, 'localhost') !== false || strpos($host, '127.0.0.1') !== false
     }
 }
 
-$kiosk_url = $protocol . "://" . $host . "/dss-saw/industrial/kiosk.php";
+$base_dir = str_replace('\\', '/', dirname($_SERVER['PHP_SELF']));
+$base_dir = rtrim($base_dir, '/');
+$kiosk_url = $protocol . "://" . $host . $base_dir . "/industrial/kiosk.php";
 ?>
 <!DOCTYPE html>
 <html lang="id">

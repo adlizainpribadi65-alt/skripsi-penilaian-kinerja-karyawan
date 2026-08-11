@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 }
 
 // Fetch Employees Data
-$stmt = $pdo->query("SELECT * FROM employees ORDER BY name ASC");
+$stmt = $pdo->query("SELECT * FROM employees ORDER BY id ASC");
 $employees = $stmt->fetchAll();
 
 // Statistics

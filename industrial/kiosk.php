@@ -167,6 +167,10 @@ require_once __DIR__ . '/../includes/db.php';
             <div class="text-muted small fw-bold text-uppercase mb-4 tracking-widest opacity-50">Silakan Scan ID Card atau Ketik NIK Anda</div>
             <form id="attendance-form">
                 <input type="text" id="nik-input" class="nik-mega-input" placeholder="000-000" autocomplete="off" autofocus>
+                <!-- Tombol submit untuk pengguna mobile / touch screen -->
+                <button type="submit" style="display: block; width: 100%; max-width: 300px; margin: 30px auto 0 auto; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 50px; font-weight: bold; letter-spacing: 2px; font-size: 1.1rem; cursor: pointer; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);">
+                    <i class="fas fa-arrow-right me-2"></i> PROSES NIK
+                </button>
             </form>
             <div class="mt-5 text-muted small fw-bold tracking-widest opacity-25">
                 <i class="fas fa-keyboard-left me-2"></i> PENGISIAN OTOMATIS AKTIF
@@ -276,8 +280,8 @@ require_once __DIR__ . '/../includes/db.php';
             }, 3000);
         }
 
-        // Keep focus on input
-        document.addEventListener('click', () => input.focus());
+        // Keep focus only for non-touch devices if needed, but safer to just let the autofocus do its job.
+        // We remove the global click listener because it breaks virtual keyboards on mobile phones.
     </script>
 </body>
 </html>

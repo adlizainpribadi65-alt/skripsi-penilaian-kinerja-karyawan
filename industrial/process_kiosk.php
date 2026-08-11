@@ -14,6 +14,17 @@ if (empty($nik)) {
     exit;
 }
 
+// Format input NIK secara cerdas
+$nik = trim($nik);
+if (is_numeric($nik)) {
+    // Jika hanya murni angka (contoh: 1 atau 001), ubah ke ID-001
+    $nik = 'ID-' . str_pad($nik, 3, '0', STR_PAD_LEFT);
+} else {
+    // Pastikan uppercase jika mereka mengisi karakter (e.g., id-001 jadi ID-001)
+    $nik = strtoupper($nik);
+}
+
+
 try {
     // 1. Find Employee by NIK
     $stmt = $pdo->prepare("SELECT id, name FROM employees WHERE nik = ?");

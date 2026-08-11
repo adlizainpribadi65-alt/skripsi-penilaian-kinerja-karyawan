@@ -32,19 +32,7 @@
             <div class="nav-item-glow"></div>
         </a>
 
-        <div class="sidebar-title">
-            <span class="sidebar-title-icon"><i class="fas fa-boxes-stacked"></i></span>
-            Logistik & Inventori
-        </div>
-        <a href="../inventori/" class="nav-item">
-            <div class="nav-icon-box icon-amber"
-                style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2);">
-                <i class="fas fa-warehouse"></i>
-            </div>
-            <span>Sistem Inventori</span>
-            <span class="nav-ext-badge"><i class="fas fa-arrow-up-right-from-square"></i></span>
-            <div class="nav-item-glow"></div>
-        </a>
+        <!-- Logistik & Inventori (Disembunyikan) -->
 
 
         <div class="sidebar-title">
@@ -121,8 +109,15 @@
 
         <div class="sidebar-title">
             <span class="sidebar-title-icon"><i class="fas fa-brain"></i></span>
-            Mesin Keputusan
+            Perangkingan & Keputusan
         </div>
+        <a href="rekap_mingguan.php" class="nav-item <?= basename($_SERVER['PHP_SELF']) == 'rekap_mingguan.php' ? 'active' : '' ?>">
+            <div class="nav-icon-box icon-teal">
+                <i class="fas fa-chart-pie"></i>
+            </div>
+            <span>Rekapitulasi Mingguan</span>
+            <div class="nav-item-glow"></div>
+        </a>
         <a href="criteria.php" class="nav-item <?= basename($_SERVER['PHP_SELF']) == 'criteria.php' ? 'active' : '' ?>">
             <div class="nav-icon-box icon-indigo">
                 <i class="fas fa-sliders"></i>

@@ -54,20 +54,20 @@ function initializeWeeklyAttendance($pdo)
 function syncAttendanceToSAW($pdo)
 {
     try {
-        // 1. Ensure "Absensi" criterion exists
-        $stmt = $pdo->prepare("SELECT id FROM criteria WHERE name LIKE '%Absensi%' OR name LIKE '%Attendance%' OR name LIKE '%Kehadiran%' LIMIT 1");
+        // 1. Ensure "Presensi" criterion exists
+        $stmt = $pdo->prepare("SELECT id FROM criteria WHERE name LIKE '%Absensi%' OR name LIKE '%Attendance%' OR name LIKE '%Kehadiran%' OR name LIKE '%Presensi%' LIMIT 1");
         $stmt->execute();
         $crit = $stmt->fetch();
  
         if (!$crit) {
-            // Create default Absensi criterion as BENEFIT
-            $stmt = $pdo->prepare("INSERT INTO criteria (name, weight, type) VALUES ('Absensi', 10.00, 'benefit')");
+            // Create default Presensi criterion as BENEFIT
+            $stmt = $pdo->prepare("INSERT INTO criteria (name, weight, type) VALUES ('Presensi', 10.00, 'benefit')");
             $stmt->execute();
             $crit_id = $pdo->lastInsertId();
         } else {
             $crit_id = $crit['id'];
-            // Force update existing criterion to benefit if it was cost
-            $pdo->prepare("UPDATE criteria SET type = 'benefit' WHERE id = ? AND type = 'cost'")->execute([$crit_id]);
+            // Force update existing criterion to benefit and rename to Presensi
+            $pdo->prepare("UPDATE criteria SET type = 'benefit', name = 'Presensi' WHERE id = ?")->execute([$crit_id]);
         }
 
  

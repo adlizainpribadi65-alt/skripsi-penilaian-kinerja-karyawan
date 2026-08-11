@@ -185,8 +185,8 @@
    NAV SECTION
    ============================================================ */
 .sidebar-nav {
-    padding: 8px 12px;
-    overflow-y: hidden; /* Dilarang scroll */
+    padding: 8px 12px 20px 12px;
+    overflow-y: auto;
     overflow-x: hidden;
     position: relative;
     z-index: 2;

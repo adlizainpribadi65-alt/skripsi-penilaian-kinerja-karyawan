@@ -1,6 +1,6 @@
 <?php
 require 'includes/db.php';
-$stmt = $pdo->query('SELECT name, weight FROM criteria');
+$stmt = $pdo->query('DESCRIBE scores');
 print_r($stmt->fetchAll(PDO::FETCH_ASSOC));
-$stmt = $pdo->query('SELECT * FROM scores LIMIT 5');
+$stmt = $pdo->query('SELECT * FROM scores');
 print_r($stmt->fetchAll(PDO::FETCH_ASSOC));

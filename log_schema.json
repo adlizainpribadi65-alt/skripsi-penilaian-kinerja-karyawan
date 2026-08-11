@@ -1,0 +1,50 @@
+[
+    {
+        "Field": "id",
+        "Type": "int(11)",
+        "Null": "NO",
+        "Key": "PRI",
+        "Default": null,
+        "Extra": "auto_increment"
+    },
+    {
+        "Field": "employee_id",
+        "Type": "int(11)",
+        "Null": "YES",
+        "Key": "MUL",
+        "Default": null,
+        "Extra": ""
+    },
+    {
+        "Field": "timestamp",
+        "Type": "datetime",
+        "Null": "YES",
+        "Key": "",
+        "Default": "current_timestamp()",
+        "Extra": ""
+    },
+    {
+        "Field": "status",
+        "Type": "varchar(50)",
+        "Null": "YES",
+        "Key": "",
+        "Default": null,
+        "Extra": ""
+    },
+    {
+        "Field": "type",
+        "Type": "varchar(10)",
+        "Null": "YES",
+        "Key": "",
+        "Default": "IN",
+        "Extra": ""
+    },
+    {
+        "Field": "shift",
+        "Type": "varchar(50)",
+        "Null": "YES",
+        "Key": "",
+        "Default": "Shift 1",
+        "Extra": ""
+    }
+]

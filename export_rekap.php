@@ -28,41 +28,40 @@ if ($filter_type === 'daily') {
         list($year, $week) = explode('-W', $filter_week);
         $dto = new DateTime();
         $dto->setISODate((int)$year, (int)$week);
+        $dto->modify('-1 day');
         $start_date = $dto->format('Y-m-d');
         $dto->modify('+6 days');
         $end_date = $dto->format('Y-m-d');
     } else {
-        $start_date = date('Y-m-d', strtotime('monday this week'));
-        $end_date = date('Y-m-d', strtotime('sunday this week'));
+        $day_of_week = date('w');
+        $start_date = date('Y-m-d', strtotime("-$day_of_week days"));
+        $end_date = date('Y-m-d', strtotime($start_date . ' +6 days'));
     }
     $display_period = "Mingguan ($filter_week)";
 }
 
 // Fetch Data (Logic copied from scores.php for consistency)
 $criteria_list = $pdo->query("SELECT id, name, weight, type FROM criteria ORDER BY id ASC")->fetchAll();
-$stmt = $pdo->prepare("SELECT s.*, e.name as emp_name, c.name as crit_name 
-                               FROM scores s 
-                               JOIN employees e ON s.employee_id = e.id 
-                               JOIN criteria c ON s.criteria_id = c.id 
-                               WHERE DATE(s.created_at) BETWEEN ? AND ?
-                               AND s.id IN (
-                                  SELECT MAX(id) FROM scores GROUP BY employee_id, criteria_id, DATE(created_at)
-                               )
-                               ORDER BY e.name ASC, c.id ASC, s.created_at ASC");
-$stmt->execute([$start_date, $end_date]);
-$all_scores_raw = $stmt->fetchAll();
+// Fetch All Employees chronologically
+$employees_raw = $pdo->query("SELECT id, name FROM employees ORDER BY id ASC")->fetchAll(PDO::FETCH_ASSOC);
 
-
+$stmt = $pdo->prepare("SELECT s.* FROM scores s");
+$stmt->execute();
+$all_scores_raw = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $consolidated_scores = [];
+// Initialize base to ensure ALL employees are shown in chronological order
+foreach ($employees_raw as $emp) {
+    $consolidated_scores[$emp['id']] = [
+        'name' => $emp['name'],
+        'scores' => []
+    ];
+}
+
 foreach ($all_scores_raw as $s) {
-    if (!isset($consolidated_scores[$s['employee_id']])) {
-        $consolidated_scores[$s['employee_id']] = [
-            'name' => $s['emp_name'],
-            'scores' => []
-        ];
+    if (isset($consolidated_scores[$s['employee_id']])) {
+        $consolidated_scores[$s['employee_id']]['scores'][$s['criteria_id']] = $s['score'];
     }
-    $consolidated_scores[$s['employee_id']]['scores'][$s['criteria_id']] = $s['score'];
 }
 
 // Calculate SAW Result for preview
@@ -84,20 +83,18 @@ if (!empty($consolidated_scores) && !empty($criteria_list)) {
         foreach ($criteria_list as $c) {
             $score = $data['scores'][$c['id']] ?? 0;
             $weight = $c['weight'] / 100;
-            if (isset($crit_stats[$c['id']])) {
-                $max = $crit_stats[$c['id']]['max'];
-                $min = $crit_stats[$c['id']]['min'];
-                if ($c['type'] == 'benefit' && $max > 0) {
-                    $r = $score / $max;
-                } elseif ($c['type'] == 'cost' && $score > 0) {
-                    $r = $min / $score;
-                } else {
-                    $r = 0;
-                }
-                $v_score += $weight * $r;
+            if (isset($data['scores'][$c['id']])) {
+                $v_score += $score * $weight;
             }
         }
         $saw_scores[$emp_id] = $v_score;
+    }
+    
+    arsort($saw_scores);
+    $ranks = [];
+    $current_rank = 1;
+    foreach ($saw_scores as $e_id => $sc) {
+        $ranks[$e_id] = $current_rank++;
     }
 }
 
@@ -138,33 +135,56 @@ if ($type == 'excel') {
 
 
     <table>
-        <thead>
             <tr>
-                <th class="name-col" rowspan="2">No</th>
-                <th class="name-col" rowspan="2">Nama Karyawan</th>
-                <th colspan="<?= count($criteria_list) ?>">Kriteria (Skor Mentah)</th>
-                <th rowspan="2">Skor Akhir (V)</th>
-            </tr>
-            <tr>
+                <th class="name-col">Informasi Personel</th>
                 <?php foreach ($criteria_list as $c): ?>
-                    <th title="<?= htmlspecialchars($c['name']) ?>">
-                        <?= htmlspecialchars($c['name']) ?><br>
-                        (<?= $c['type'] ?>)
+                    <th style="background:#eef2ff; font-size:10px; color: #4338ca;" title="<?= htmlspecialchars($c['name']) ?>">
+                        <?= htmlspecialchars($c['name']) ?> (<?= htmlspecialchars($c['weight']) ?>%)
                     </th>
                 <?php endforeach; ?>
+                <th>Jumlah</th>
+                <th>Target Kinerja</th>
+                <th>Keterangan</th>
+                <th>SAW (Perangkingan)</th>
             </tr>
         </thead>
         <tbody>
             <?php 
             $no = 1;
-            foreach ($consolidated_scores as $emp_id => $data): ?>
+            // Iterate using the chronological employees list
+            foreach ($employees_raw as $emp): 
+                $emp_id = $emp['id'];
+                $data = $consolidated_scores[$emp_id];
+                $rank_number = $ranks[$emp_id] ?? '-';
+            ?>
                 <tr>
-                    <td><?= $no++ ?></td>
                     <td class="name-col"><?= htmlspecialchars($data['name']) ?></td>
                     <?php foreach ($criteria_list as $c): ?>
-                        <td><?= isset($data['scores'][$c['id']]) ? (float)$data['scores'][$c['id']] : '-' ?></td>
+                        <td style="color:#059669; font-weight:bold;">
+                            <?php 
+                                if (isset($data['scores'][$c['id']])) {
+                                    $val = (float)$data['scores'][$c['id']];
+                                    $wdt = $val * ($c['weight'] / 100);
+                                    echo rtrim(rtrim(number_format($wdt, 2, ',', ''), '0'), ',');
+                                } else {
+                                    echo '-';
+                                }
+                            ?>
+                        </td>
                     <?php endforeach; ?>
-                    <td class="total-col"><?= number_format($saw_scores[$emp_id] ?? 0, 4) ?></td>
+                    <?php
+                        $score_raw = $saw_scores[$emp_id] ?? 0;
+                        $score100 = round($score_raw, 2);
+                        if ($score100 > 70) $ket = 'DIGAJI';
+                        elseif ($score100 == 70) $ket = 'DIBINA';
+                        else $ket = 'DIKELUARKAN';
+                    ?>
+                    <td class="total-col"><?= str_replace('.00', '', number_format($score100, 2, ',', '')) ?></td>
+                    <td class="total-col" style="color: blue;">70</td>
+                    <td class="total-col" style="color: <?= $score100 > 70 ? 'green' : ($score100 == 70 ? 'orange' : 'red') ?>;">
+                        <?= strtolower($ket) ?>
+                    </td>
+                    <td class="total-col" style="font-weight: bold;"><?= $rank_number ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

@@ -119,6 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save_matrix'])) {
                 // Konversi bobot decimal ke persen (x 100)
                 $b = $priority_vector[$id] * 100;
                 $insertBobot->execute([$id, $b, $ci, $cr]);
+                // Update weight diaktifkan kembali sesuai instruksi terbaru "sambungkan dengan ahp nya"
                 $updateCriteria->execute([$b, $id]);
             }
             $pdo->commit();
@@ -263,7 +264,7 @@ require_once 'includes/header.php';
                           <div class="col-6">
                               <div class="d-flex justify-content-between align-items-center p-2 px-3" style="background:rgba(255,255,255,0.05); border-radius: 6px;">
                                     <div class="small fw-bold text-white text-truncate" style="max-width: 70%;"><?= htmlspecialchars($c['name']) ?></div>
-                                    <div class="text-primary fw-bold font-monospace"><?= number_format($priority_vector[$c['id']] * 100, 1) ?>%</div>
+                                    <div class="text-primary fw-bold font-monospace"><?= number_format($c['weight'], 1) ?>%</div>
                               </div>
                           </div>
                      <?php endforeach; ?>

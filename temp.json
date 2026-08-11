@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "name": "Absensi"
+    },
+    {
+        "id": 2,
+        "name": "Produktivitas"
+    },
+    {
+        "id": 3,
+        "name": "Disiplin"
+    },
+    {
+        "id": 4,
+        "name": "Kerja Sama"
+    },
+    {
+        "id": 5,
+        "name": "Kualitas Kerja"
+    }
+]
